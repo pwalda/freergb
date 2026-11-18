@@ -387,6 +387,17 @@ mod tests {
         tokio::time::sleep(Duration::from_millis(400)).await;
     }
 
+    /// Polls instead of one fixed sleep, so a loaded test machine cannot fail it.
+    async fn eventually(what: &str, mut ok: impl FnMut() -> bool) {
+        for _ in 0..100 {
+            if ok() {
+                return;
+            }
+            tokio::time::sleep(Duration::from_millis(50)).await;
+        }
+        panic!("{what}");
+    }
+
     fn rgb_set(server: &MockServer, id: u32) -> std::collections::HashSet<(u8, u8, u8)> {
         server
             .device(id)
@@ -626,8 +637,7 @@ mod tests {
         let first = connect(&server).await;
         l.attach(Some(&first));
         l.set_scenes(vec![rainbow_all()]).unwrap();
-        settle().await;
-        assert!(rgb_set(&server, id).len() > 50);
+        eventually("scene not applied", || rgb_set(&server, id).len() > 50).await;
 
         // The connection dies; the supervisor publishes "no client", then a new one.
         server.crash();
@@ -644,12 +654,10 @@ mod tests {
         let id = server.device_ids()[0];
         let before = server.device(id).unwrap().colors;
         l.attach(Some(&connect(&server).await));
-        settle().await;
-        assert_ne!(
-            server.device(id).unwrap().colors,
-            before,
-            "scene not re-applied"
-        );
+        eventually("scene not re-applied", || {
+            server.device(id).unwrap().colors != before
+        })
+        .await;
         l.shutdown().await;
     }
 
