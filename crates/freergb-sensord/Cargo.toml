@@ -11,6 +11,10 @@ publish = false
 [lints.rust]
 unsafe_code = "deny"
 
+[build-dependencies]
+# Already in the tree through tauri-build.
+tauri-winres = "=0.3.7"
+
 [dependencies]
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"

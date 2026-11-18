@@ -1374,6 +1374,7 @@ version = "0.1.0-beta.1"
 dependencies = [
  "serde",
  "serde_json",
+ "tauri-winres",
  "windows-service",
  "windows-sys 0.61.2",
 ]
