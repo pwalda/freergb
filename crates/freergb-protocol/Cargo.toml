@@ -1,0 +1,17 @@
+[package]
+name = "freergb-protocol"
+description = "OpenRGB SDK wire protocol codec (protocol versions 0-6)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+publish = false
+
+[lints]
+workspace = true
+
+[dependencies]
+thiserror = "2"
+
+[dev-dependencies]
+serde_json = "1"

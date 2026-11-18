@@ -1,0 +1,20 @@
+[package]
+name = "freergb-mock"
+description = "Scriptable mock OpenRGB SDK server for tests (speaks the real wire protocol)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+publish = false
+
+[lints]
+workspace = true
+
+[dependencies]
+freergb-protocol = { path = "../freergb-protocol" }
+serde_json = "1"
+tokio = { version = "1", features = ["net", "io-util", "sync", "time", "rt", "rt-multi-thread", "macros", "io-std"] }
+
+[dev-dependencies]
+freergb-sdk = { path = "../freergb-sdk" }
+freergb-supervisor = { path = "../freergb-supervisor" }

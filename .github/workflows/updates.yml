@@ -1,0 +1,44 @@
+name: Update feed
+# Publishing a release (also a pre-release) offers it to the in-app updater: its latest.json
+# goes to the `updates` branch, which the app reads (plugins.updater in tauri.conf.json).
+# Drafts are never offered. Run it by hand to re-publish the feed for a tag.
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag, e.g. v0.1.0-beta.2
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  feed:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TAG: ${{ github.event.release.tag_name || inputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: feed
+        run: |
+          gh release view "$TAG" --json tagName,body,publishedAt > "$RUNNER_TEMP/release.json"
+          mkdir "$RUNNER_TEMP/sigs"
+          gh release download "$TAG" --pattern '*.sig' --dir "$RUNNER_TEMP/sigs" || true
+          status=0
+          python3 tools/ci/update-feed.py "$RUNNER_TEMP/release.json" "$RUNNER_TEMP/sigs" \
+            "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/download/$TAG" "$RUNNER_TEMP/latest.json" || status=$?
+          if [ "$status" = 3 ]; then echo "::warning::$TAG has no updater signatures; the feed is unchanged"; exit 0; fi
+          [ "$status" = 0 ] || exit "$status"
+          echo "ready=true" >> "$GITHUB_OUTPUT"
+      # One commit, replaced each time: the feed has no history worth keeping.
+      - if: steps.feed.outputs.ready == 'true'
+        run: |
+          git switch --orphan updates
+          cp "$RUNNER_TEMP/latest.json" latest.json
+          git add latest.json
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+            commit -q -m "Update feed: $TAG"
+          git push --force origin updates

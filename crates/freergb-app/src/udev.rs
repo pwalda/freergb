@@ -1,0 +1,141 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+//! Linux device access: OpenRGB running as the user reaches USB, HID and SMBus devices only
+//! through its udev rules. Distro packages install them; an AppImage or a build does not, so
+//! the window offers to install OpenRGB's own copy (linux/60-openrgb.rules) with pkexec.
+
+#[cfg(any(target_os = "linux", test))]
+use std::path::Path;
+
+/// Where udev reads rules from, admin overrides first.
+#[cfg(target_os = "linux")]
+const RULE_DIRS: &[&str] = &[
+    "/etc/udev/rules.d",
+    "/run/udev/rules.d",
+    "/usr/local/lib/udev/rules.d",
+    "/usr/lib/udev/rules.d",
+    "/lib/udev/rules.d",
+];
+
+/// Any `*openrgb*.rules` file counts: distros name it differently (60-openrgb.rules,
+/// 70-openrgb.rules, openrgb.rules).
+#[cfg(any(target_os = "linux", test))]
+fn installed_in(dirs: &[&Path]) -> bool {
+    dirs.iter().any(|d| {
+        std::fs::read_dir(d)
+            .into_iter()
+            .flatten()
+            .flatten()
+            .any(|e| {
+                let name = e.file_name().to_string_lossy().to_lowercase();
+                name.contains("openrgb") && name.ends_with(".rules")
+            })
+    })
+}
+
+/// Root's part, one password prompt: the rules arrive on stdin, so the AppImage's private
+/// mount (which root cannot read) is never in the way. SMBus devices (memory, motherboard)
+/// also need the i2c-dev module, now and at every boot.
+#[cfg(target_os = "linux")]
+const INSTALL: &str = r#"set -e
+umask 022
+cat > /etc/udev/rules.d/60-openrgb.rules.new
+mv /etc/udev/rules.d/60-openrgb.rules.new /etc/udev/rules.d/60-openrgb.rules
+mkdir -p /etc/modules-load.d
+echo i2c-dev > /etc/modules-load.d/i2c-dev.conf
+modprobe i2c-dev || true
+udevadm control --reload-rules
+udevadm trigger"#;
+
+/// pkexec's exit code when the prompt was dismissed (126) or the password not accepted (127).
+#[cfg(any(target_os = "linux", test))]
+fn pkexec_error(code: Option<i32>) -> String {
+    match code {
+        Some(126) | Some(127) => {
+            "Device access was not set up: the password prompt was cancelled.".into()
+        }
+        Some(c) => format!("Device access was not set up (error {c})."),
+        None => "Device access was not set up: the setup was stopped.".into(),
+    }
+}
+
+/// `None` where there is nothing to set up (not Linux); otherwise whether the rules are there.
+#[tauri::command]
+pub fn udev_rules() -> Option<bool> {
+    #[cfg(target_os = "linux")]
+    {
+        let dirs: Vec<&Path> = RULE_DIRS.iter().map(Path::new).collect();
+        Some(installed_in(&dirs))
+    }
+    #[cfg(not(target_os = "linux"))]
+    {
+        None
+    }
+}
+
+#[tauri::command]
+pub async fn install_udev_rules() -> Result<(), String> {
+    #[cfg(target_os = "linux")]
+    {
+        use std::process::Stdio;
+        use tokio::io::AsyncWriteExt;
+        const RULES: &str = include_str!("../linux/60-openrgb.rules");
+        let mut child = tokio::process::Command::new("pkexec")
+            .args(["/bin/sh", "-c", INSTALL])
+            .stdin(Stdio::piped())
+            .stdout(Stdio::null())
+            .stderr(Stdio::null())
+            .spawn()
+            .map_err(|e| {
+                format!("Device access could not be set up: pkexec is not available ({e}). See the install guide for the manual steps.")
+            })?;
+        if let Some(mut stdin) = child.stdin.take() {
+            // A cancelled prompt closes the pipe early; the exit code says what happened.
+            let _ = stdin.write_all(RULES.as_bytes()).await;
+        }
+        let status = child.wait().await.map_err(|e| e.to_string())?;
+        if status.success() {
+            Ok(())
+        } else {
+            Err(pkexec_error(status.code()))
+        }
+    }
+    #[cfg(not(target_os = "linux"))]
+    {
+        Err("Device access needs no setup here.".into())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn rules_are_found_under_any_openrgb_name() {
+        let base = std::env::temp_dir().join(format!("freergb-udev-{}", std::process::id()));
+        let (a, b) = (base.join("etc"), base.join("lib"));
+        std::fs::create_dir_all(&a).unwrap();
+        std::fs::create_dir_all(&b).unwrap();
+        let dirs = [a.as_path(), b.as_path(), Path::new("/nonexistent/rules.d")];
+        std::fs::write(a.join("99-other.rules"), "").unwrap();
+        std::fs::write(b.join("openrgb.rules.bak"), "").unwrap();
+        assert!(!installed_in(&dirs));
+        std::fs::write(b.join("70-OpenRGB.rules"), "").unwrap();
+        assert!(installed_in(&dirs));
+        std::fs::remove_dir_all(&base).unwrap();
+    }
+
+    #[test]
+    fn a_cancelled_prompt_says_so() {
+        assert!(pkexec_error(Some(126)).contains("cancelled"));
+        assert!(pkexec_error(Some(127)).contains("cancelled"));
+        assert!(pkexec_error(Some(1)).contains("error 1"));
+    }
+
+    #[cfg(target_os = "linux")]
+    #[test]
+    fn the_bundled_rules_are_openrgbs() {
+        let rules = include_str!("../linux/60-openrgb.rules");
+        assert!(rules.contains("Generated by OpenRGB"));
+        assert!(rules.contains(r#"KERNEL=="i2c-[0-99]*", TAG+="uaccess""#));
+    }
+}

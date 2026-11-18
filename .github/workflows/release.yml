@@ -1,0 +1,170 @@
+name: Release
+# Push a tag vX.Y.Z[-pre] whose version equals the workspace version in
+# Cargo.toml. Builds every installer and opens a DRAFT GitHub Release with them;
+# publishing the draft stays a manual step. See docs/RELEASING.md.
+# Run it by hand (workflow_dispatch) for a dry run: builds, no release.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  version:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.v.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: v
+        shell: bash
+        run: |
+          version=$(grep -m1 '^version = ' Cargo.toml | cut -d'"' -f2)
+          if [ "$GITHUB_REF_TYPE" = tag ] && [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::tag $GITHUB_REF_NAME does not match Cargo.toml version $version"
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+  windows:
+    needs: version
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: ui/package-lock.json
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - run: npm ci
+        working-directory: ui
+      # The installer bundles a pinned OpenRGB (tauri.windows.conf.json).
+      - run: tools/ci/fetch-openrgb.sh
+        shell: bash
+      # And the sensor service, which reads the CPU temperature through PawnIO.
+      - run: tools/ci/build-sensord.sh
+        shell: bash
+      # The About sheet lists every library's licence; the UI build folds this in.
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-about@0.9.3
+      - run: tools/ci/licenses.sh
+        shell: bash
+      # beforeBuildCommand in tauri.conf.json builds the UI.
+      - run: npx --yes @tauri-apps/cli@2 build --bundles nsis
+        working-directory: crates/freergb-app
+      - id: unsigned
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsigned-windows
+          path: target/release/bundle/nsis/*.exe
+          if-no-files-found: error
+      # Off until SignPath Foundation approves the project: set the repository
+      # variable SIGNPATH_ENABLED=true and the SIGNPATH_* secrets/variables.
+      - name: Sign with SignPath
+        if: vars.SIGNPATH_ENABLED == 'true'
+        uses: signpath/github-action-submit-signing-request@v1
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: ${{ vars.SIGNPATH_PROJECT_SLUG }}
+          signing-policy-slug: ${{ vars.SIGNPATH_POLICY_SLUG }}
+          github-artifact-id: ${{ steps.unsigned.outputs.artifact-id }}
+          wait-for-completion: true
+          output-artifact-directory: signed
+      - name: Pick the installer to release
+        shell: bash
+        run: |
+          mkdir out
+          if [ -d signed ]; then cp signed/*.exe out/; else cp target/release/bundle/nsis/*.exe out/; fi
+      # After code signing, which changes the bytes the updater signature covers.
+      - name: Updater signatures
+        shell: bash
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        run: tools/ci/updater-sign.sh out/*.exe
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-windows
+          path: out/*
+          if-no-files-found: error
+
+  linux:
+    needs: version
+    # The oldest supported runner, so the AppImage runs on older glibc too.
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: ui/package-lock.json
+      - name: Build libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev libxdo-dev libssl-dev libasound2-dev libpipewire-0.3-dev libspa-0.2-dev libclang-dev file
+      # 22.04's PipeWire headers are too old for the screen capture bindings.
+      - name: Newer PipeWire headers
+        run: |
+          tools/ci/pipewire-headers.sh "$RUNNER_TEMP/pw"
+          echo "PKG_CONFIG_PATH=$RUNNER_TEMP/pw/lib/pkgconfig" >> "$GITHUB_ENV"
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - run: npm ci
+        working-directory: ui
+      # The About sheet lists every library's licence; the UI build folds this in.
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-about@0.9.3
+      - run: tools/ci/licenses.sh
+        shell: bash
+      - run: npx --yes @tauri-apps/cli@2 build --bundles appimage,deb,rpm
+        working-directory: crates/freergb-app
+      - name: Updater signatures
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        run: |
+          mkdir out
+          cp target/release/bundle/appimage/*.AppImage target/release/bundle/deb/*.deb target/release/bundle/rpm/*.rpm out/
+          tools/ci/updater-sign.sh out/*
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-linux
+          path: out/*
+          if-no-files-found: error
+
+  release:
+    needs: [version, windows, linux]
+    if: github.ref_type == 'tag'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: release-*
+          path: dist
+          merge-multiple: true
+      # GPL and LGPL: the source of what the installers redistribute goes with every release.
+      - name: Third-party sources
+        run: tools/ci/fetch-sources.sh dist
+      - name: Checksums
+        working-directory: dist
+        run: sha256sum * > SHA256SUMS.txt
+      - name: Draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ needs.version.outputs.version }}
+        run: |
+          pre=""
+          case "$VERSION" in *-*) pre="--prerelease" ;; esac
+          gh release create "$GITHUB_REF_NAME" dist/* --draft $pre \
+            --title "freeRGB $VERSION" --notes-file .github/release-notes.md

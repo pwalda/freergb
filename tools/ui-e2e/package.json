@@ -1,0 +1,8 @@
+{
+  "name": "freergb-ui-e2e",
+  "private": true,
+  "type": "module",
+  "description": "Drives the built UI in headless Chromium against a fake Tauri backend. Not part of CI.",
+  "scripts": { "test": "node run.mjs" },
+  "devDependencies": { "playwright-core": "^1.50.0" }
+}

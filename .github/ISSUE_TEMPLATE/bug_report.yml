@@ -1,0 +1,37 @@
+name: Bug report
+description: Something doesn't work as it should.
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you expected, and what happened instead.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: freeRGB version
+      description: Settings > About freeRGB.
+      placeholder: 0.1.0-beta.1
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: System
+      options: [Windows 11, Linux]
+    validations:
+      required: true
+  - type: textarea
+    id: devices
+    attributes:
+      label: Devices involved
+      description: The RGB devices the problem touches, as freeRGB names them.
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Diagnostics
+      description: In Settings > Diagnostics, the Copy button on the Log tab and on the Hardware tab. Paste both here.
+      render: text

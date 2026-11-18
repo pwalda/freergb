@@ -1,0 +1,15 @@
+[package]
+name = "freergb-supervisor"
+version = "0.0.1"
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+publish = false
+description = "Detect-first OpenRGB server supervisor: connect to an existing server or run and babysit a bundled one"
+
+[lints]
+workspace = true
+
+[dependencies]
+freergb-sdk = { path = "../freergb-sdk" }
+tokio = { version = "1", features = ["net", "process", "io-util", "sync", "time", "rt", "macros"] }

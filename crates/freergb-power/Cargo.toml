@@ -1,0 +1,20 @@
+[package]
+name = "freergb-power"
+description = "Tells when the PC is about to sleep and when it wakes, early enough to act before sleep"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+publish = false
+
+# The one crate allowed unsafe code: the Windows module registers a callback with the OS.
+# Everything else stays safe (deny, with an allow on that module only).
+[lints.rust]
+unsafe_code = "deny"
+
+[target.'cfg(target_os = "linux")'.dependencies]
+# logind's PrepareForSleep signal and a delay lock; already in the tree through pinray.
+zbus = "=5.19.0"
+
+[target.'cfg(windows)'.dependencies]
+windows-sys = { version = "=0.61.2", features = ["Win32_Foundation", "Win32_System_Power", "Win32_UI_WindowsAndMessaging"] }

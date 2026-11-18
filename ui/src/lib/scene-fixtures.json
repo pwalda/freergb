@@ -1,0 +1,799 @@
+[
+  {
+    "input": {
+      "kind": "static",
+      "colors": [
+        "#ff3b30",
+        "#0a84ff",
+        "#30d158"
+      ],
+      "speed": 0.25,
+      "density": 1,
+      "brightness": 1,
+      "reverse": false,
+      "perDevice": false
+    },
+    "scene": {
+      "effect": {
+        "type": "static",
+        "colors": [
+          "#ff3b30"
+        ],
+        "speed": 0.25,
+        "density": 1,
+        "brightness": 1,
+        "direction": "forward"
+      },
+      "targets": "all",
+      "canvas": "shared"
+    }
+  },
+  {
+    "input": {
+      "kind": "gradient",
+      "colors": [
+        "#ff3b30",
+        "#0a84ff",
+        "#30d158"
+      ],
+      "speed": 0.25,
+      "density": 1,
+      "brightness": 0.5,
+      "reverse": true,
+      "perDevice": false
+    },
+    "scene": {
+      "effect": {
+        "type": "gradient",
+        "colors": [
+          "#ff3b30",
+          "#0a84ff",
+          "#30d158"
+        ],
+        "speed": 0.25,
+        "density": 1,
+        "brightness": 0.5,
+        "direction": "reverse"
+      },
+      "targets": "all",
+      "canvas": "shared"
+    }
+  },
+  {
+    "input": {
+      "kind": "spectrum_cycle",
+      "colors": [
+        "#ff3b30",
+        "#0a84ff",
+        "#30d158"
+      ],
+      "speed": 0.5,
+      "density": 1,
+      "brightness": 1,
+      "reverse": false,
+      "perDevice": true
+    },
+    "scene": {
+      "effect": {
+        "type": "spectrum_cycle",
+        "colors": [],
+        "speed": 0.5,
+        "density": 1,
+        "brightness": 1,
+        "direction": "forward"
+      },
+      "targets": "all",
+      "canvas": "per_device"
+    }
+  },
+  {
+    "input": {
+      "kind": "rainbow",
+      "colors": [
+        "#ff3b30",
+        "#0a84ff",
+        "#30d158"
+      ],
+      "speed": 0.25,
+      "density": 2.5,
+      "brightness": 1,
+      "reverse": false,
+      "perDevice": false
+    },
+    "scene": {
+      "effect": {
+        "type": "rainbow",
+        "colors": [],
+        "speed": 0.25,
+        "density": 2.5,
+        "brightness": 1,
+        "direction": "forward"
+      },
+      "targets": "all",
+      "canvas": "shared"
+    }
+  },
+  {
+    "input": {
+      "kind": "breathing",
+      "colors": [
+        "#ff3b30",
+        "#0a84ff",
+        "#30d158"
+      ],
+      "speed": 0.25,
+      "density": 1,
+      "brightness": 1,
+      "reverse": false,
+      "perDevice": false
+    },
+    "scene": {
+      "effect": {
+        "type": "breathing",
+        "colors": [
+          "#ff3b30",
+          "#0a84ff",
+          "#30d158"
+        ],
+        "speed": 0.25,
+        "density": 1,
+        "brightness": 1,
+        "direction": "forward"
+      },
+      "targets": "all",
+      "canvas": "shared"
+    }
+  },
+  {
+    "input": {
+      "kind": "wave",
+      "colors": [
+        "#ff3b30",
+        "#0a84ff",
+        "#30d158"
+      ],
+      "speed": 2,
+      "density": 8,
+      "brightness": 0,
+      "reverse": true,
+      "perDevice": true
+    },
+    "scene": {
+      "effect": {
+        "type": "wave",
+        "colors": [
+          "#ff3b30",
+          "#0a84ff",
+          "#30d158"
+        ],
+        "speed": 2,
+        "density": 8,
+        "brightness": 0,
+        "direction": "reverse"
+      },
+      "targets": "all",
+      "canvas": "per_device"
+    }
+  },
+  {
+    "input": {
+      "kind": "static",
+      "colors": [
+        "#00aaff",
+        "#0a84ff",
+        "#30d158"
+      ],
+      "speed": 0.25,
+      "density": 1,
+      "brightness": 0.8,
+      "reverse": false,
+      "perDevice": false
+    },
+    "targets": {
+      "devices": [
+        {
+          "name": "Corsair Vengeance",
+          "location": "I2C: /dev/i2c-1, address 0x58",
+          "serial": "",
+          "nth": 0
+        }
+      ]
+    },
+    "scene": {
+      "effect": {
+        "type": "static",
+        "colors": [
+          "#00aaff"
+        ],
+        "speed": 0.25,
+        "density": 1,
+        "brightness": 0.8,
+        "direction": "forward"
+      },
+      "targets": {
+        "devices": [
+          {
+            "name": "Corsair Vengeance",
+            "location": "I2C: /dev/i2c-1, address 0x58",
+            "serial": "",
+            "nth": 0
+          }
+        ]
+      },
+      "canvas": "shared"
+    }
+  },
+  {
+    "input": {
+      "kind": "wave",
+      "colors": [
+        "#ff3b30",
+        "#0a84ff",
+        "#30d158"
+      ],
+      "speed": 0.5,
+      "density": 2,
+      "brightness": 1,
+      "reverse": false,
+      "perDevice": false
+    },
+    "targets": {
+      "devices": [
+        {
+          "name": "Corsair Vengeance",
+          "location": "I2C: /dev/i2c-1, address 0x58",
+          "serial": "",
+          "nth": 1
+        },
+        {
+          "name": "Corsair Vengeance",
+          "location": "I2C: /dev/i2c-1, address 0x58",
+          "serial": "",
+          "nth": 0
+        }
+      ]
+    },
+    "scene": {
+      "effect": {
+        "type": "wave",
+        "colors": [
+          "#ff3b30",
+          "#0a84ff",
+          "#30d158"
+        ],
+        "speed": 0.5,
+        "density": 2,
+        "brightness": 1,
+        "direction": "forward"
+      },
+      "targets": {
+        "devices": [
+          {
+            "name": "Corsair Vengeance",
+            "location": "I2C: /dev/i2c-1, address 0x58",
+            "serial": "",
+            "nth": 1
+          },
+          {
+            "name": "Corsair Vengeance",
+            "location": "I2C: /dev/i2c-1, address 0x58",
+            "serial": "",
+            "nth": 0
+          }
+        ]
+      },
+      "canvas": "shared"
+    }
+  },
+  {
+    "input": {
+      "kind": "device_mode",
+      "colors": [
+        "#ff0000",
+        "#0000ff"
+      ],
+      "speed": 0.4,
+      "density": 1,
+      "brightness": 0.8,
+      "reverse": false,
+      "perDevice": false,
+      "mode": "Breathing",
+      "modeDirection": "up"
+    },
+    "targets": {
+      "devices": [
+        {
+          "name": "Corsair Vengeance",
+          "location": "I2C: /dev/i2c-1, address 0x58",
+          "serial": "",
+          "nth": 0
+        }
+      ]
+    },
+    "scene": {
+      "effect": {
+        "type": "device_mode",
+        "mode": "Breathing",
+        "colors": [
+          "#ff0000",
+          "#0000ff"
+        ],
+        "speed": 0.4,
+        "brightness": 0.8,
+        "mode_direction": "up"
+      },
+      "targets": {
+        "devices": [
+          {
+            "name": "Corsair Vengeance",
+            "location": "I2C: /dev/i2c-1, address 0x58",
+            "serial": "",
+            "nth": 0
+          }
+        ]
+      },
+      "canvas": "shared"
+    }
+  },
+  {
+    "input": {
+      "kind": "painted",
+      "colors": [
+        "#ff0000",
+        "#00ff00",
+        "#000000",
+        "#0a84ff"
+      ],
+      "speed": 0.25,
+      "density": 1,
+      "brightness": 0.7,
+      "reverse": false,
+      "perDevice": false
+    },
+    "targets": {
+      "devices": [
+        {
+          "name": "Corsair K70",
+          "location": "HID: /dev/hidraw3",
+          "serial": "",
+          "nth": 0
+        }
+      ]
+    },
+    "scene": {
+      "effect": {
+        "type": "painted",
+        "colors": [
+          "#ff0000",
+          "#00ff00",
+          "#000000",
+          "#0a84ff"
+        ],
+        "brightness": 0.7
+      },
+      "targets": {
+        "devices": [
+          {
+            "name": "Corsair K70",
+            "location": "HID: /dev/hidraw3",
+            "serial": "",
+            "nth": 0
+          }
+        ]
+      },
+      "canvas": "shared"
+    }
+  },
+  {
+    "input": {
+      "kind": "comet",
+      "colors": [
+        "#ffffff",
+        "#0a84ff",
+        "#30d158"
+      ],
+      "speed": 0.5,
+      "density": 2,
+      "brightness": 0.9,
+      "reverse": true,
+      "perDevice": false
+    },
+    "targets": {
+      "devices": [
+        {
+          "name": "Corsair K70",
+          "location": "HID: /dev/hidraw3",
+          "serial": "",
+          "nth": 0
+        },
+        {
+          "name": "ENE DRAM",
+          "location": "I2C: /dev/i2c-2, address 0x70",
+          "serial": "",
+          "nth": 0
+        }
+      ]
+    },
+    "group": "Desk strip",
+    "scene": {
+      "effect": {
+        "type": "comet",
+        "colors": [
+          "#ffffff",
+          "#0a84ff"
+        ],
+        "speed": 0.5,
+        "density": 2,
+        "brightness": 0.9,
+        "direction": "reverse"
+      },
+      "targets": {
+        "devices": [
+          {
+            "name": "Corsair K70",
+            "location": "HID: /dev/hidraw3",
+            "serial": "",
+            "nth": 0
+          },
+          {
+            "name": "ENE DRAM",
+            "location": "I2C: /dev/i2c-2, address 0x70",
+            "serial": "",
+            "nth": 0
+          }
+        ]
+      },
+      "canvas": "shared",
+      "group": "Desk strip"
+    }
+  },
+  {
+    "input": {
+      "kind": "marquee",
+      "colors": [
+        "#ff3b30",
+        "#0a84ff",
+        "#30d158"
+      ],
+      "speed": 0.25,
+      "density": 1.0,
+      "brightness": 1,
+      "reverse": false,
+      "perDevice": false
+    },
+    "scene": {
+      "effect": {
+        "type": "marquee",
+        "colors": [
+          "#ff3b30",
+          "#0a84ff",
+          "#30d158"
+        ],
+        "speed": 0.25,
+        "density": 1.0,
+        "brightness": 1,
+        "direction": "forward"
+      },
+      "targets": "all",
+      "canvas": "shared"
+    }
+  },
+  {
+    "input": {
+      "kind": "bouncing_beam",
+      "colors": [
+        "#ff3b30",
+        "#0a84ff",
+        "#30d158"
+      ],
+      "speed": 0.5,
+      "density": 1.5,
+      "brightness": 1,
+      "reverse": true,
+      "perDevice": false
+    },
+    "scene": {
+      "effect": {
+        "type": "bouncing_beam",
+        "colors": [
+          "#ff3b30",
+          "#0a84ff"
+        ],
+        "speed": 0.5,
+        "density": 1.5,
+        "brightness": 1,
+        "direction": "reverse"
+      },
+      "targets": "all",
+      "canvas": "shared"
+    }
+  },
+  {
+    "input": {
+      "kind": "starfield",
+      "colors": [
+        "#ff3b30",
+        "#0a84ff",
+        "#30d158"
+      ],
+      "speed": 0.75,
+      "density": 2.0,
+      "brightness": 1,
+      "reverse": false,
+      "perDevice": true
+    },
+    "scene": {
+      "effect": {
+        "type": "starfield",
+        "colors": [
+          "#ff3b30",
+          "#0a84ff",
+          "#30d158"
+        ],
+        "speed": 0.75,
+        "density": 2.0,
+        "brightness": 1,
+        "direction": "forward"
+      },
+      "targets": "all",
+      "canvas": "per_device"
+    }
+  },
+  {
+    "input": {
+      "kind": "fire",
+      "colors": [
+        "#ff3b30",
+        "#0a84ff",
+        "#30d158"
+      ],
+      "speed": 1.0,
+      "density": 2.5,
+      "brightness": 1,
+      "reverse": true,
+      "perDevice": false
+    },
+    "scene": {
+      "effect": {
+        "type": "fire",
+        "colors": [
+          "#ff3b30",
+          "#0a84ff",
+          "#30d158"
+        ],
+        "speed": 1.0,
+        "density": 2.5,
+        "brightness": 1,
+        "direction": "reverse"
+      },
+      "targets": "all",
+      "canvas": "shared"
+    }
+  },
+  {
+    "input": {
+      "kind": "rain",
+      "colors": [
+        "#ff3b30",
+        "#0a84ff",
+        "#30d158"
+      ],
+      "speed": 1.25,
+      "density": 3.0,
+      "brightness": 1,
+      "reverse": false,
+      "perDevice": false
+    },
+    "scene": {
+      "effect": {
+        "type": "rain",
+        "colors": [
+          "#ff3b30",
+          "#0a84ff"
+        ],
+        "speed": 1.25,
+        "density": 3.0,
+        "brightness": 1,
+        "direction": "forward"
+      },
+      "targets": "all",
+      "canvas": "shared"
+    }
+  },
+  {
+    "input": {
+      "kind": "comet",
+      "colors": [
+        "#ffffff",
+        "#0a84ff",
+        "#30d158"
+      ],
+      "speed": 0.5,
+      "density": 1,
+      "brightness": 1,
+      "reverse": false,
+      "perDevice": false,
+      "angle": 135
+    },
+    "scene": {
+      "effect": {
+        "type": "comet",
+        "colors": [
+          "#ffffff",
+          "#0a84ff"
+        ],
+        "speed": 0.5,
+        "density": 1,
+        "brightness": 1,
+        "direction": "forward",
+        "angle": 135
+      },
+      "targets": "all",
+      "canvas": "shared"
+    }
+  },
+  {
+    "input": {
+      "kind": "device_mode",
+      "colors": [],
+      "speed": 0.5,
+      "density": 1,
+      "brightness": 1,
+      "reverse": false,
+      "perDevice": false,
+      "mode": "Static",
+      "modeDirection": null,
+      "zones": [
+        {
+          "zone": 0,
+          "mode": "Fixed",
+          "colors": [
+            "#0080ff"
+          ],
+          "speed": 0.5,
+          "brightness": 1
+        },
+        {
+          "zone": 2,
+          "mode": "Pulse",
+          "colors": [
+            "#ff4000"
+          ],
+          "speed": 0.25,
+          "brightness": 1
+        }
+      ]
+    },
+    "targets": {
+      "devices": [
+        {
+          "name": "Mock Fan Hub",
+          "location": "mock:HUB001",
+          "serial": "HUB001",
+          "nth": 0
+        }
+      ]
+    },
+    "scene": {
+      "effect": {
+        "type": "device_mode",
+        "mode": "Static",
+        "colors": [],
+        "speed": 0.5,
+        "brightness": 1,
+        "zones": [
+          {
+            "zone": 0,
+            "mode": "Fixed",
+            "colors": [
+              "#0080ff"
+            ],
+            "speed": 0.5,
+            "brightness": 1
+          },
+          {
+            "zone": 2,
+            "mode": "Pulse",
+            "colors": [
+              "#ff4000"
+            ],
+            "speed": 0.25,
+            "brightness": 1
+          }
+        ]
+      },
+      "targets": {
+        "devices": [
+          {
+            "name": "Mock Fan Hub",
+            "location": "mock:HUB001",
+            "serial": "HUB001",
+            "nth": 0
+          }
+        ]
+      },
+      "canvas": "shared"
+    }
+  },
+  {
+    "input": {
+      "kind": "static",
+      "colors": [
+        "#0a84ff",
+        "#ff3b30",
+        "#30d158"
+      ],
+      "speed": 0.25,
+      "density": 1,
+      "brightness": 1,
+      "reverse": false,
+      "perDevice": false,
+      "react": {
+        "source": "cpu_temp",
+        "drives": "color",
+        "low": 40,
+        "high": 80
+      }
+    },
+    "scene": {
+      "effect": {
+        "type": "static",
+        "colors": [
+          "#0a84ff",
+          "#ff3b30"
+        ],
+        "speed": 0.25,
+        "density": 1,
+        "brightness": 1,
+        "direction": "forward",
+        "react": {
+          "source": "cpu_temp",
+          "drives": "color",
+          "low": 40,
+          "high": 80
+        }
+      },
+      "targets": "all",
+      "canvas": "shared"
+    }
+  },
+  {
+    "input": {
+      "kind": "wave",
+      "colors": [
+        "#ff3b30",
+        "#0a84ff",
+        "#30d158"
+      ],
+      "speed": 0.25,
+      "density": 1,
+      "brightness": 1,
+      "reverse": false,
+      "perDevice": false,
+      "react": {
+        "source": "sound",
+        "drives": "brightness"
+      }
+    },
+    "scene": {
+      "effect": {
+        "type": "wave",
+        "colors": [
+          "#ff3b30",
+          "#0a84ff",
+          "#30d158"
+        ],
+        "speed": 0.25,
+        "density": 1,
+        "brightness": 1,
+        "direction": "forward",
+        "react": {
+          "source": "sound",
+          "drives": "brightness"
+        }
+      },
+      "targets": "all",
+      "canvas": "shared"
+    }
+  }
+]

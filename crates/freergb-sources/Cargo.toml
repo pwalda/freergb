@@ -1,0 +1,33 @@
+[package]
+name = "freergb-sources"
+description = "Readings for looks that react: temperatures, loads, sound and the screen, each started only while a look follows it"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+publish = false
+
+[lints]
+workspace = true
+
+[dependencies]
+freergb-effects = { path = "../freergb-effects" }
+tokio = { version = "1", features = ["sync", "time", "rt"] }
+serde = { version = "1", features = ["derive"] }
+sysinfo = { version = "=0.38.4", default-features = false, features = ["system"] }
+nvml-wrapper = "=0.13.0"
+# PulseAudio (also served by PipeWire) gives the output's monitor on Linux; WASAPI loopback on Windows.
+cpal = { version = "=0.18.2", features = ["pulseaudio"] }
+# The screen: DXGI/WGC on Windows, the Wayland portal + PipeWire or X11 on Linux.
+pinray = "=0.2.9"
+
+[target.'cfg(windows)'.dependencies]
+wmi = { version = "=0.18.4", default-features = false }
+# The sensor service's pipe and message.
+freergb-sensord = { path = "../freergb-sensord" }
+
+[dev-dependencies]
+freergb-mock = { path = "../freergb-mock" }
+freergb-sdk = { path = "../freergb-sdk" }
+serde_json = "1"
+tokio = { version = "1", features = ["sync", "time", "rt", "rt-multi-thread", "macros", "test-util"] }

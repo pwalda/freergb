@@ -1,0 +1,15 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "bundle": {
+    "linux": {
+      "deb": {
+        "depends": ["libpipewire-0.3-0", "libasound2"],
+        "recommends": ["openrgb"]
+      },
+      "rpm": {
+        "depends": ["libpipewire-0.3.so.0()(64bit)", "libasound.so.2()(64bit)"],
+        "recommends": ["openrgb"]
+      }
+    }
+  }
+}

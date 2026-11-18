@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+<rect x="40" y="40" width="944" height="944" rx="216" fill="#161513" stroke="#2e2b27" stroke-width="14"/>
+<circle cx="276" cy="158" r="47" fill="#2c2925"/>
+<circle cx="394" cy="158" r="47" fill="#2c2925"/>
+<circle cx="512" cy="158" r="47" fill="#f0427c"/>
+<circle cx="630" cy="158" r="47" fill="#f04e42"/>
+<circle cx="748" cy="158" r="47" fill="#2c2925"/>
+<circle cx="276" cy="276" r="47" fill="#2c2925"/>
+<circle cx="394" cy="276" r="47" fill="#f09342"/>
+<circle cx="512" cy="276" r="47" fill="#2c2925"/>
+<circle cx="630" cy="276" r="47" fill="#2c2925"/>
+<circle cx="748" cy="276" r="47" fill="#f0d942"/>
+<circle cx="276" cy="394" r="47" fill="#2c2925"/>
+<circle cx="394" cy="394" r="47" fill="#c1f042"/>
+<circle cx="512" cy="394" r="47" fill="#2c2925"/>
+<circle cx="630" cy="394" r="47" fill="#2c2925"/>
+<circle cx="748" cy="394" r="47" fill="#2c2925"/>
+<circle cx="276" cy="512" r="47" fill="#7cf042"/>
+<circle cx="394" cy="512" r="47" fill="#42f04e"/>
+<circle cx="512" cy="512" r="47" fill="#42f093"/>
+<circle cx="630" cy="512" r="47" fill="#2c2925"/>
+<circle cx="748" cy="512" r="47" fill="#2c2925"/>
+<circle cx="276" cy="630" r="47" fill="#2c2925"/>
+<circle cx="394" cy="630" r="47" fill="#42f0d9"/>
+<circle cx="512" cy="630" r="47" fill="#2c2925"/>
+<circle cx="630" cy="630" r="47" fill="#2c2925"/>
+<circle cx="748" cy="630" r="47" fill="#2c2925"/>
+<circle cx="276" cy="748" r="47" fill="#2c2925"/>
+<circle cx="394" cy="748" r="47" fill="#42c1f0"/>
+<circle cx="512" cy="748" r="47" fill="#2c2925"/>
+<circle cx="630" cy="748" r="47" fill="#2c2925"/>
+<circle cx="748" cy="748" r="47" fill="#2c2925"/>
+<circle cx="276" cy="866" r="47" fill="#2c2925"/>
+<circle cx="394" cy="866" r="47" fill="#427cf0"/>
+<circle cx="512" cy="866" r="47" fill="#2c2925"/>
+<circle cx="630" cy="866" r="47" fill="#2c2925"/>
+<circle cx="748" cy="866" r="47" fill="#2c2925"/>
+</svg>

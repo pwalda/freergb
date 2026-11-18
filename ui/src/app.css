@@ -1,0 +1,645 @@
+/* Geist and Geist Mono (SIL OFL 1.1, see THIRD-PARTY-NOTICES.md), latin and latin-ext only, bundled:
+   the window's CSP allows no remote fonts and no data: URLs. */
+@font-face {
+  font-family: 'Geist Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('../node_modules/@fontsource-variable/geist/files/geist-latin-ext-wght-normal.woff2') format('woff2-variations');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Geist Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('../node_modules/@fontsource-variable/geist/files/geist-latin-wght-normal.woff2') format('woff2-variations');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Geist Mono Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('../node_modules/@fontsource-variable/geist-mono/files/geist-mono-latin-ext-wght-normal.woff2') format('woff2-variations');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Geist Mono Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('../node_modules/@fontsource-variable/geist-mono/files/geist-mono-latin-wght-normal.woff2') format('woff2-variations');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* Doto (SIL OFL 1.1), dot-matrix, for the wordmark only: latin, the letters it needs. */
+@font-face {
+  font-family: 'Doto Variable';
+  font-style: normal;
+  font-display: block;
+  font-weight: 100 900;
+  src: url('../node_modules/@fontsource-variable/doto/files/doto-latin-wght-normal.woff2') format('woff2-variations');
+  unicode-range: U+0000-00FF;
+}
+
+/* Minimal, muted, matte: warm near-black, hairlines, one lamp-white accent. The light the hardware
+   makes is the only saturated colour. Tokens first; components only use these. */
+:root {
+  color-scheme: dark;
+  --font: 'Geist Variable', system-ui, -apple-system, 'Segoe UI Variable Text', 'Segoe UI', Roboto, sans-serif;
+  --mono: 'Geist Mono Variable', ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  --ground: #121110;
+  --rail: #161513;
+  --raise: #1e1d1b;
+  --stage: #0b0b0a;
+  --line: #2a2825;
+  --line2: #383531;
+  --text: #e9e5dc;
+  --muted: #958f83;
+  --lamp: #efe6cf;
+  --lamp-ink: #121110;
+  --ok: #9cc7a4;
+  --warn: #d9b26a;
+  --bad: #e09a8c;
+  --shadow: rgba(0, 0, 0, 0.6);
+  --scrim: rgba(6, 6, 5, 0.6);
+  /* Dots on the stage: unlit, device outline. */
+  --dot-off: #22201d;
+  --dot-line: #54504a;
+  /* What the dots near the pointer warm towards. */
+  --dot-glow: #efe6cf;
+  /* A painted LED button's edge, and an unlit one. */
+  --led-edge: rgba(255, 255, 255, 0.22);
+  --led-off: rgba(255, 255, 255, 0.04);
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --fast: 180ms;
+  /* Height of the app-drawn title bar; 0 where the system draws one (WindowFrame.svelte). */
+  --frame-h: 0px;
+  --mid: 300ms;
+  --slow: 520ms;
+}
+:root[data-theme='light'] {
+  color-scheme: light;
+  --ground: #f1efea;
+  --rail: #eae7e0;
+  --raise: #fbfaf7;
+  --stage: #e6e2d8;
+  --line: #dcd8cf;
+  --line2: #c9c4b9;
+  --text: #1b1a17;
+  --muted: #6a655a;
+  --lamp: #1b1a17;
+  --lamp-ink: #f8f6f1;
+  --ok: #3d7a4d;
+  --warn: #8a6417;
+  --bad: #a8442f;
+  --shadow: rgba(70, 58, 35, 0.22);
+  --scrim: rgba(60, 52, 40, 0.28);
+  --dot-off: #d8d3c8;
+  --dot-line: #aca598;
+  --dot-glow: #8d8471;
+  --led-edge: rgba(30, 25, 15, 0.22);
+  --led-off: rgba(30, 25, 15, 0.05);
+}
+
+* {
+  box-sizing: border-box;
+}
+html {
+  background: var(--ground);
+  height: 100%;
+}
+body {
+  margin: 0;
+  height: 100%;
+  color: var(--text);
+  background: var(--ground);
+  font: 14px/1.45 var(--font);
+  -webkit-font-smoothing: antialiased;
+}
+#app {
+  height: 100%;
+}
+:root[data-frame] {
+  --frame-h: 32px;
+}
+button,
+select,
+input {
+  font: inherit;
+  color: inherit;
+}
+button {
+  cursor: pointer;
+}
+h1,
+h2,
+h3,
+h4,
+p {
+  margin: 0;
+}
+:focus-visible {
+  outline: 2px solid var(--lamp);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+::selection {
+  background: color-mix(in srgb, var(--lamp) 30%, transparent);
+}
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--line2);
+  border-radius: 10px;
+  border: 3px solid var(--ground);
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+.num {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.92em;
+}
+.sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* A matte sheet over the window (the painter). */
+.panel {
+  background: var(--raise);
+  border-radius: 14px;
+  box-shadow:
+    inset 0 0 0 1px var(--line2),
+    0 30px 60px -30px var(--shadow);
+}
+
+.btn {
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 9px;
+  border: 1px solid var(--line2);
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  font-size: 13.5px;
+  white-space: nowrap;
+  transition:
+    background var(--fast),
+    border-color var(--fast),
+    transform var(--fast) var(--ease);
+}
+.btn:hover:not(:disabled) {
+  background: var(--raise);
+  border-color: var(--muted);
+}
+.btn:active:not(:disabled) {
+  transform: scale(0.96);
+}
+.btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.btn.sm {
+  height: 28px;
+  padding: 0 10px;
+  font-size: 12.5px;
+}
+.ibtn {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border-radius: 8px;
+  border: 1px solid var(--line2);
+  background: none;
+  display: grid;
+  place-items: center;
+  transition: background var(--fast);
+}
+.ibtn:hover {
+  background: var(--raise);
+}
+
+.chip {
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 7px;
+  border: 1px solid var(--line2);
+  background: none;
+  font-size: 12.5px;
+  color: var(--text);
+  white-space: nowrap;
+  transition:
+    background var(--fast),
+    color var(--fast),
+    border-color var(--fast);
+}
+.chip:hover {
+  background: var(--raise);
+}
+.chip[aria-pressed='true'] {
+  background: var(--lamp);
+  color: var(--lamp-ink);
+  border-color: var(--lamp);
+}
+
+.select {
+  position: relative;
+  display: block;
+  min-width: 0;
+}
+.select select {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  height: 32px;
+  padding: 0 32px 0 10px;
+  border: 1px solid var(--line2);
+  border-radius: 8px;
+  background: transparent;
+  font-size: 13px;
+  text-overflow: ellipsis;
+}
+.select select:hover {
+  background: var(--raise);
+}
+.select select option {
+  color: var(--text);
+  background: var(--raise);
+}
+.select svg {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  margin-top: -7px;
+  pointer-events: none;
+  color: var(--muted);
+}
+
+input[type='range'] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 16px;
+  margin: 0;
+  background: none;
+  cursor: pointer;
+}
+input[type='range']::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 4px;
+  background:
+    linear-gradient(var(--lamp), var(--lamp)) 0 / var(--fill, 50%) 100% no-repeat,
+    var(--line2);
+}
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  margin-top: -6px;
+  border-radius: 50%;
+  background: var(--text);
+  box-shadow: 0 2px 6px var(--shadow);
+  transition: transform var(--fast) var(--ease);
+}
+input[type='range']:hover::-webkit-slider-thumb {
+  transform: scale(1.1);
+}
+input[type='range']:active::-webkit-slider-thumb {
+  transform: scale(1.25);
+}
+input[type='range']::-moz-range-track {
+  height: 4px;
+  border-radius: 4px;
+  background: var(--line2);
+}
+input[type='range']::-moz-range-progress {
+  height: 4px;
+  border-radius: 4px;
+  background: var(--lamp);
+}
+input[type='range']::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--text);
+}
+
+input[type='checkbox'][role='switch'] {
+  -webkit-appearance: none;
+  appearance: none;
+  position: relative;
+  flex: none;
+  width: 34px;
+  height: 20px;
+  margin: 0;
+  border-radius: 10px;
+  background: var(--line2);
+  cursor: pointer;
+  transition: background var(--mid);
+}
+input[type='checkbox'][role='switch']::after {
+  content: '';
+  position: absolute;
+  left: 3px;
+  top: 3px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--text);
+  transition:
+    transform var(--mid) var(--ease),
+    width var(--fast);
+}
+input[type='checkbox'][role='switch']:active::after {
+  width: 18px;
+}
+input[type='checkbox'][role='switch']:checked {
+  background: var(--lamp);
+}
+input[type='checkbox'][role='switch']:checked::after {
+  transform: translateX(14px);
+  background: var(--lamp-ink);
+}
+input[type='checkbox'][role='switch']:checked:active::after {
+  transform: translateX(10px);
+}
+
+input[type='color'] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  box-shadow:
+    0 0 0 3px var(--ground),
+    0 0 0 4px var(--line2);
+  cursor: pointer;
+  transition: box-shadow var(--fast);
+}
+input[type='color']:hover {
+  box-shadow:
+    0 0 0 3px var(--ground),
+    0 0 0 4px var(--muted);
+}
+input[type='color']::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+input[type='color']::-webkit-color-swatch {
+  border: 0;
+  border-radius: 50%;
+}
+input[type='color']::-moz-color-swatch {
+  border: 0;
+  border-radius: 50%;
+}
+
+.tag {
+  display: inline-block;
+  font-size: 10.5px;
+  font-weight: 600;
+  line-height: 16px;
+  border-radius: 4px;
+  padding: 0 5px;
+  background: var(--lamp);
+  color: var(--lamp-ink);
+  white-space: nowrap;
+  animation: pop var(--mid) var(--ease);
+}
+.tag.ghost {
+  background: none;
+  color: var(--muted);
+  box-shadow: inset 0 0 0 1px var(--line2);
+}
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+}
+/* Content arriving: rises out of a slight blur. */
+@keyframes in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+    filter: blur(6px);
+  }
+}
+
+/* Main column: heading, stage, vials, controls. From 1240px the controls take a right column. */
+.main {
+  grid-area: main;
+  position: relative;
+  min-width: 0;
+  overflow: auto;
+  /* The scroll area starts under the app-drawn title bar, so its scrollbar clears the caption
+     buttons; the heading lands where it would sit under a system title bar. */
+  margin-top: var(--frame-h);
+  padding: max(12px, calc(24px - var(--frame-h))) 28px 90px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: 'head' 'stage' 'gels' 'ctl';
+  align-content: start;
+  gap: 20px;
+}
+.main:has(> .error) {
+  grid-template-areas: 'error' 'head' 'stage' 'gels' 'ctl';
+}
+.error {
+  grid-area: error;
+  padding: 10px 14px;
+  border-radius: 10px;
+  color: var(--bad);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--bad) 45%, transparent);
+  animation: in var(--slow) var(--ease);
+}
+.head {
+  grid-area: head;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 62px;
+}
+.head .in {
+  min-width: 0;
+}
+h1 {
+  font-size: 34px;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+  text-wrap: balance;
+}
+.sub {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 13.5px;
+  text-wrap: pretty;
+}
+.in {
+  animation: in var(--slow) var(--ease) backwards;
+}
+
+.ctl {
+  --ctl-cols: repeat(3, minmax(0, 1fr));
+  grid-area: ctl;
+  display: grid;
+  grid-template-columns: var(--ctl-cols);
+  gap: 18px 28px;
+  align-content: start;
+  border-top: 1px solid var(--line);
+  padding-top: 18px;
+}
+.ctl > * {
+  animation: in var(--slow) var(--ease) backwards;
+}
+.ctl > :nth-child(2) {
+  animation-delay: 40ms;
+}
+.ctl > :nth-child(3) {
+  animation-delay: 80ms;
+}
+.ctl > :nth-child(4) {
+  animation-delay: 120ms;
+}
+.ctl > :nth-child(n + 5) {
+  animation-delay: 160ms;
+}
+.wide {
+  grid-column: 1 / -1;
+}
+.field {
+  display: grid;
+  gap: 10px;
+  align-content: start;
+  min-width: 0;
+}
+.lbl {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 13px;
+}
+.lbl b {
+  font-weight: 400;
+  color: var(--muted);
+}
+.colors {
+  display: flex;
+  gap: 12px;
+  height: 24px;
+  align-items: center;
+  padding-left: 4px;
+}
+.note,
+.hint {
+  font-size: 13px;
+  color: var(--muted);
+}
+.note {
+  height: 24px;
+  display: flex;
+  align-items: center;
+}
+.check {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+}
+.rowset {
+  display: grid;
+  gap: 10px;
+}
+.rowset h4 {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+.sep {
+  width: 1px;
+  height: 20px;
+  background: var(--line2);
+  margin: 0 4px;
+}
+
+@media (min-width: 1240px) {
+  .main {
+    grid-template-columns: minmax(0, 1fr) 280px;
+    grid-template-areas: 'head head' 'stage ctl' 'gels ctl';
+    column-gap: 36px;
+    padding: max(12px, calc(30px - var(--frame-h))) 36px 90px;
+  }
+  .main:has(> .error) {
+    grid-template-areas: 'error error' 'head head' 'stage ctl' 'gels ctl';
+  }
+  .ctl {
+    --ctl-cols: minmax(0, 1fr);
+    border-top: 0;
+    border-left: 1px solid var(--line);
+    padding: 0 0 0 28px;
+  }
+  h1 {
+    font-size: 40px;
+  }
+}
+@media (max-width: 700px) {
+  .main {
+    margin-top: 0;
+    padding: 18px 16px 90px;
+    gap: 16px;
+  }
+  h1 {
+    font-size: 28px;
+  }
+  .head {
+    align-items: flex-start;
+  }
+  .head .btn {
+    height: 30px;
+    padding: 0 10px;
+  }
+  .ctl {
+    --ctl-cols: minmax(0, 1fr);
+  }
+}
+
+/* The theme switch is a circular reveal from the switch (View Transitions, where available). */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

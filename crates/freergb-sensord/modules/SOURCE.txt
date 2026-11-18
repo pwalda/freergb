@@ -1,0 +1,4 @@
+IntelMSR.bin and AMDFamily17.bin are PawnIO modules, unmodified, from PawnIO.Modules 0.2.12
+(https://github.com/namazso/PawnIO.Modules/releases/tag/0.2.12), by namazso. They are free
+software under the GNU Lesser General Public License version 2.1 or later (COPYING).
+Their source: https://github.com/namazso/PawnIO.Modules/tree/0.2.12

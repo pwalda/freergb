@@ -1,0 +1,8 @@
+/target
+node_modules/
+*.log
+ui/dist/
+crates/freergb-app/gen/
+crates/freergb-app/openrgb/
+__pycache__/
+crates/freergb-app/sensord/

@@ -1,0 +1,41 @@
+[package]
+name = "freergb-app"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+publish = false
+description = "freergb desktop shell (Tauri): tray, window, IPC to the backend"
+
+[lints]
+workspace = true
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+freergb-effects = { path = "../freergb-effects" }
+freergb-sdk = { path = "../freergb-sdk" }
+freergb-power = { path = "../freergb-power" }
+freergb-sources = { path = "../freergb-sources" }
+freergb-supervisor = { path = "../freergb-supervisor" }
+tauri = { version = "2", features = ["tray-icon", "image-png"] }
+serde_json = "1"
+serde = { version = "1", features = ["derive"] }
+tokio = { version = "1", features = ["time", "sync", "signal", "macros", "process", "io-util"] }
+tauri-plugin-single-instance = "2"
+tauri-plugin-autostart = "2"
+tauri-plugin-dialog = "2"
+# Local time of day for the schedule (std has no time zones); already in the tree.
+chrono = { version = "=0.4.45", default-features = false, features = ["clock", "std"] }
+tauri-plugin-updater = "2"
+tauri-plugin-opener = "2"
+tauri-plugin-snap-layout = "1"
+
+[features]
+# Set by `tauri build`; serves the embedded frontend instead of devUrl.
+custom-protocol = ["tauri/custom-protocol"]
+
+[dev-dependencies]
+freergb-mock = { path = "../freergb-mock" }
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "time", "net"] }

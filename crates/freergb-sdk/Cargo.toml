@@ -1,0 +1,22 @@
+[package]
+name = "freergb-sdk"
+description = "Async OpenRGB SDK client (protocol 6) with device store, behind a backend trait"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+publish = false
+
+[lints]
+workspace = true
+
+[dependencies]
+freergb-protocol = { path = "../freergb-protocol" }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+tokio = { version = "1", features = ["net", "io-util", "sync", "time", "rt", "macros"] }
+
+[dev-dependencies]
+freergb-mock = { path = "../freergb-mock" }
+tokio = { version = "1", features = ["net", "io-util", "sync", "time", "rt", "rt-multi-thread", "macros"] }

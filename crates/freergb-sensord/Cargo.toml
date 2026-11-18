@@ -1,0 +1,20 @@
+[package]
+name = "freergb-sensord"
+description = "freeRGB's sensor service: reads the CPU temperature through PawnIO as SYSTEM and hands it to the app over a read-only pipe"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+publish = false
+
+# Like freergb-power: unsafe only in the Windows module that talks to PawnIO and the pipe.
+[lints.rust]
+unsafe_code = "deny"
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[target.'cfg(windows)'.dependencies]
+windows-service = "=0.8.1"
+windows-sys = { version = "=0.61.2", features = ["Win32_Foundation", "Win32_Security", "Win32_Storage_FileSystem", "Win32_System_IO", "Win32_System_LibraryLoader", "Win32_System_Pipes", "Win32_System_Registry"] }
