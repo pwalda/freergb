@@ -82,6 +82,7 @@ async fn check(handle: &AppHandle) {
             let view = UpdateView::of(&update);
             *lock(&handle.state::<Updates>().pending) = Some(update);
             let _ = handle.emit("update", &view);
+            crate::shell::tray_changed(handle);
         }
         Ok(None) => {}
         // Offline or the feed is down: the next daily check tries again.
@@ -91,6 +92,36 @@ async fn check(handle: &AppHandle) {
 
 fn lock<T>(m: &Mutex<T>) -> std::sync::MutexGuard<'_, T> {
     m.lock().unwrap_or_else(|e| e.into_inner())
+}
+
+/// The tray's update entry: absent with no update, disabled while it installs.
+pub fn tray_item(handle: &AppHandle) -> Option<(String, bool)> {
+    let updates = handle.state::<Updates>();
+    let version = lock(&updates.pending).as_ref().map(|u| u.version.clone());
+    tray_label(
+        version.as_deref(),
+        updates.installing.load(Ordering::SeqCst),
+    )
+}
+
+fn tray_label(version: Option<&str>, installing: bool) -> Option<(String, bool)> {
+    let version = version?;
+    Some(if installing {
+        ("Installing update…".into(), false)
+    } else {
+        (format!("Install freeRGB {version}"), true)
+    })
+}
+
+/// The tray's "Install freeRGB X": the same install as Settings. A failure shows in the window.
+pub fn install_from_tray(handle: &AppHandle) {
+    let handle = handle.clone();
+    tauri::async_runtime::spawn(async move {
+        if let Err(e) = install_update(handle.clone()).await {
+            eprintln!("freergb: {e}");
+            let _ = handle.emit("notice", e);
+        }
+    });
 }
 
 #[tauri::command]
@@ -109,11 +140,13 @@ pub async fn install_update(handle: AppHandle) -> Result<(), String> {
     if updates.installing.swap(true, Ordering::SeqCst) {
         return Ok(());
     }
+    crate::shell::tray_changed(&handle);
     let result = download_and_install(&handle, &update).await;
     handle
         .state::<Updates>()
         .installing
         .store(false, Ordering::SeqCst);
+    crate::shell::tray_changed(&handle);
     result
 }
 
@@ -163,6 +196,19 @@ mod tests {
         assert_eq!(p.advance(489, Some(1000)), Some(50));
         assert_eq!(p.advance(600, Some(1000)), Some(100), "never past 100");
         assert_eq!(p.advance(10, Some(1000)), None);
+    }
+
+    #[test]
+    fn the_tray_offers_the_update_until_it_installs() {
+        assert_eq!(tray_label(None, false), None);
+        assert_eq!(
+            tray_label(Some("0.1.0-beta.2"), false),
+            Some(("Install freeRGB 0.1.0-beta.2".into(), true))
+        );
+        assert_eq!(
+            tray_label(Some("0.1.0-beta.2"), true),
+            Some(("Installing update…".into(), false))
+        );
     }
 
     #[test]

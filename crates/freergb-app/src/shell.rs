@@ -156,18 +156,25 @@ const TRAY_ID: &str = "main";
 /// Menu IDs of profile entries; the rest of the ID is the profile's name.
 const PROFILE_ITEM: &str = "profile:";
 
-/// Show, the profiles (the running one checked), Lights off, About, Quit.
+/// Show, a ready update, the profiles (the running one checked), Lights off, About, Quit.
 fn tray_menu(handle: &AppHandle, view: &ProfilesView) -> tauri::Result<Menu<Wry>> {
-    let mut items: Vec<Box<dyn IsMenuItem<Wry>>> = vec![
-        Box::new(MenuItem::with_id(
+    let mut items: Vec<Box<dyn IsMenuItem<Wry>>> = vec![Box::new(MenuItem::with_id(
+        handle,
+        "show",
+        "Show freeRGB",
+        true,
+        None::<&str>,
+    )?)];
+    if let Some((label, enabled)) = crate::update::tray_item(handle) {
+        items.push(Box::new(MenuItem::with_id(
             handle,
-            "show",
-            "Show freeRGB",
-            true,
+            "update",
+            label,
+            enabled,
             None::<&str>,
-        )?),
-        Box::new(PredefinedMenuItem::separator(handle)?),
-    ];
+        )?));
+    }
+    items.push(Box::new(PredefinedMenuItem::separator(handle)?));
     if view.names.is_empty() {
         items.push(Box::new(MenuItem::with_id(
             handle,
@@ -215,6 +222,11 @@ fn tray_menu(handle: &AppHandle, view: &ProfilesView) -> tauri::Result<Menu<Wry>
     Menu::with_items(handle, &refs)
 }
 
+/// Rebuilds the tray menu, for changes outside the profiles (a ready update).
+pub(crate) fn tray_changed(handle: &AppHandle) {
+    refresh_tray(handle, &profiles_view(&handle.state::<App>()));
+}
+
 fn refresh_tray(handle: &AppHandle, view: &ProfilesView) {
     let (Some(tray), Ok(menu)) = (handle.tray_by_id(TRAY_ID), tray_menu(handle, view)) else {
         return;
@@ -236,6 +248,10 @@ fn on_tray_menu(handle: &AppHandle, id: &str) {
         "about" => {
             show_main(handle);
             crate::about::request(handle);
+            Ok(())
+        }
+        "update" => {
+            crate::update::install_from_tray(handle);
             Ok(())
         }
         "off" => lights_off(handle, &app),
