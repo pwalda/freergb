@@ -289,7 +289,7 @@
             {/if}
           {:else if logState === 'waiting'}
             <h3>Restart OpenRGB to start its log</h3>
-            <p>The setting is saved. OpenRGB reads it when it starts, so close OpenRGB and start it again, then come back here.</p>
+            <p>The setting is saved. OpenRGB reads it when it starts: close OpenRGB and start it again, or restart the PC when OpenRGB runs as a background service, as the Windows installer sets it up. Then come back here.</p>
           {:else}
             <h3>OpenRGB is not keeping a log</h3>
             <p>
