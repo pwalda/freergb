@@ -6,8 +6,14 @@
 #   powershell -ExecutionPolicy Bypass -File tools\tray-numbers.ps1 [-Minutes 5] [-Every 5]
 param([double]$Minutes = 5, [int]$Every = 5)
 
-$app = Get-Process freergb -ErrorAction SilentlyContinue | Select-Object -First 1
-if (-not $app) { Write-Error 'freergb is not running'; exit 1 }
+# The installed exe is freeRGB.exe; a dev build is freergb-app.exe. OpenRGB and the sensor
+# service also match *rgb*, so they are left out by name.
+$app = Get-Process | Where-Object { $_.Name -in 'freeRGB', 'freergb', 'freergb-app' } | Select-Object -First 1
+if (-not $app) {
+    $seen = (Get-Process | Where-Object { $_.Name -like '*rgb*' } | ForEach-Object { $_.Name }) -join ', '
+    Write-Error "freeRGB is not running (processes with 'rgb' in the name: $(if ($seen) { $seen } else { 'none' }))"
+    exit 1
+}
 
 function Children($parentId) {
     Get-CimInstance Win32_Process -Filter "ParentProcessId=$parentId" | ForEach-Object {
