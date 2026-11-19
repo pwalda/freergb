@@ -19,11 +19,16 @@ unzip -q "$tmp/o.zip" -d "$tmp/x" 2>/dev/null || python3 -m zipfile -e "$tmp/o.z
 rm -rf "$out"
 mkdir -p "$out"
 cp -r "$tmp/x/OpenRGB Windows 64-bit/." "$out/"
+# Microsoft's DirectX shader compiler: Qt loads it only to draw OpenRGB's window, and the
+# service runs headless (tested on Windows 11). Leaving it out keeps the bundle open source,
+# which SignPath's free signing requires. rm fails loudly if a new zip renames them.
+rm "$out/dxcompiler.dll" "$out/dxil.dll"
 cp "$root/LICENSE" "$out/LICENSE.txt"
 cat > "$out/SOURCE.txt" <<TXT
-This folder is OpenRGB 1.1 for Windows, unmodified, as published by the OpenRGB
-project. OpenRGB is free software under the GNU General Public License version 2 or
-later (LICENSE.txt). It is not part of freeRGB and is not made by the freeRGB authors.
+This folder is OpenRGB 1.1 for Windows as published by the OpenRGB project, without
+Microsoft's DirectX shader compiler (dxcompiler.dll, dxil.dll), which only its window
+uses. OpenRGB is free software under the GNU General Public License version 2 or later
+(LICENSE.txt). It is not part of freeRGB and is not made by the freeRGB authors.
 
 Source code of this exact build ($tag, commit $commit):
   https://codeberg.org/OpenRGB/OpenRGB/src/commit/$commit

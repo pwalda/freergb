@@ -10,8 +10,9 @@ modules.
 
 ## OpenRGB 1.1 (Windows installer)
 
-The Windows installer includes OpenRGB 1.1 for Windows, unmodified, as published by the OpenRGB
-project (https://openrgb.org), in its `openrgb` folder. OpenRGB is free software under the GNU
+The Windows installer includes OpenRGB 1.1 for Windows as published by the OpenRGB project
+(https://openrgb.org), in its `openrgb` folder, without Microsoft's DirectX shader compiler
+(`dxcompiler.dll`, `dxil.dll`), which only OpenRGB's window uses. OpenRGB is free software under the GNU
 General Public License, version 2 or later; its licence text is `openrgb\LICENSE.txt`. Its source,
 release_1.1 at commit 8e16de27858cf2be6af54a33ce003df74cb9fd3e:
 https://codeberg.org/OpenRGB/OpenRGB/src/commit/8e16de27858cf2be6af54a33ce003df74cb9fd3e
@@ -40,9 +41,6 @@ OpenRGB's folder also carries these libraries, as OpenRGB ships them:
   (https://pawnio.eu), as OpenRGB 1.1 ships them. PawnIOLib's open-source edition is under the
   GNU Lesser General Public License, version 2.1 (https://github.com/namazso/PawnIO); the
   modules are under the LGPL, version 2.1 or later (https://github.com/namazso/PawnIO.Modules).
-- **DirectX Shader Compiler** (`dxcompiler.dll`, `dxil.dll`), Copyright (C) Microsoft
-  Corporation, redistributed as OpenRGB ships them, under Microsoft's terms for redistributing
-  these files.
 
 The PawnIO driver is not part of freeRGB: the installer offers to download it from PawnIO's
 official release.
