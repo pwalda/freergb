@@ -1437,7 +1437,7 @@ if (SHOTS) {
   const about = page.locator('dialog.sheet[aria-labelledby=about-title]')
   await settle()
   const t = await about.textContent()
-  ok(t.includes('0.1.0-beta.1') && t.includes('A front-end for OpenRGB') && t.includes('OpenRGB 1.1, unmodified'), 'About shows the version, the OpenRGB credit and the bundled OpenRGB')
+  ok(t.includes('0.1.0-beta.1') && t.includes('A front-end for OpenRGB') && t.includes('OpenRGB 1.1, under the same licence'), 'About shows the version, the OpenRGB credit and the bundled OpenRGB')
   ok(!(await settings.isVisible()), 'in place of Settings')
   await about.getByRole('button', { name: 'GitHub Sponsors' }).click()
   await about.getByRole('button', { name: 'Ko-fi' }).click()

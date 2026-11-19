@@ -104,7 +104,7 @@
       </p>
       {#if info?.bundled_openrgb}
         <p>
-          Bundled: OpenRGB {info.bundled_openrgb}, unmodified, under the same licence. Its source is attached to every freeRGB
+          Bundled: OpenRGB {info.bundled_openrgb}, under the same licence. Its source is attached to every freeRGB
           release.
         </p>
         <div class="links">
