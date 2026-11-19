@@ -25,7 +25,7 @@ From [signpath.org/terms](https://signpath.org/terms):
 | Requirement | Status |
 |---|---|
 | OSI licence, no commercial dual-licensing | Done: GPL-2.0-or-later. |
-| "May not contain any proprietary, non open-source component" | **Blocker.** The installer carries OpenRGB's `PawnIOLib.dll` (PawnIO's official build). See below. The DirectX DLLs are gone. |
+| "May not contain any proprietary, non open-source component" | Done: the installer leaves out OpenRGB's DirectX DLLs and `PawnIOLib.dll`. See below. |
 | Upstream open-source binaries may be bundled unsigned, and must not be signed under our subscription | OK: OpenRGB, Qt, libusb and HIDAPI stay as OpenRGB ships them. Sign only `freeRGB.exe`, `freergb-sensord.exe` and the installer. |
 | Built from the repository by an automated build | Done: `.github/workflows/release.yml`. |
 | A "Code signing policy" on the home and download pages, with "Free code signing provided by SignPath.io, certificate by SignPath Foundation", the team roles and members, and a privacy statement | To do when accepted: a README section and a line in the release notes. |
@@ -39,10 +39,10 @@ From [signpath.org/terms](https://signpath.org/terms):
 - **`dxcompiler.dll`, `dxil.dll`**: DONE. Qt loads them only for OpenRGB's window. Tested on
   Windows 11: the headless service starts and lights devices without them, so
   `tools/ci/fetch-openrgb.sh` leaves them out.
-- **`PawnIOLib.dll`**: PawnIO's official builds are proprietary (redistributable); its
-  open-source edition is LGPL-2.1. Either build PawnIOLib from its public source in CI and ship
-  that instead, or check whether OpenRGB finds the copy the PawnIO installer puts in
-  `C:\Program Files\PawnIO` and stop shipping one.
+- **`PawnIOLib.dll`**: DONE. Not shipped: the installer copies the one PawnIO's own setup
+  puts on the PC into OpenRGB's folder (`freergb-setup.ps1`, `Copy-PawnIOLib`), on every
+  install and update and after it installs PawnIO. The sensor service already loads it from
+  PawnIO's folder.
 
 ## Application draft (SignPath Foundation)
 

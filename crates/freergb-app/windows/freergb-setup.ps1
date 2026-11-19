@@ -21,6 +21,18 @@ function Get-Installed([string]$pattern) {
         Where-Object { $_.DisplayName -like $pattern } | Select-Object -First 1
 }
 
+# OpenRGB needs PawnIOLib.dll beside it for SMBus devices. Its official build is not ours to
+# redistribute, so it comes from PawnIO's own installation (as the sensor service loads it).
+# Without PawnIO there is nothing to copy, and OpenRGB could not reach those devices anyway.
+$pawnioLib = Join-Path $PSScriptRoot 'openrgb\PawnIOLib.dll'
+function Copy-PawnIOLib {
+    $entry = Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\PawnIO' -ErrorAction SilentlyContinue
+    $dir = if ($entry -and $entry.InstallLocation) { $entry.InstallLocation } else { Join-Path $env:ProgramFiles 'PawnIO' }
+    $lib = Join-Path $dir 'PawnIOLib.dll'
+    # A copy held open by a running OpenRGB stays as it is; the next update replaces it.
+    if (Test-Path $lib) { try { Copy-Item $lib $pawnioLib -Force } catch { Write-Warning $_ } }
+}
+
 # The NSIS hooks read this from stdout; no trailing newline.
 function Out-Version([string]$version) {
     if ($version) { [Console]::Out.Write($version) } else { [Console]::Out.Write('unknown') }
@@ -28,6 +40,8 @@ function Out-Version([string]$version) {
 
 switch ($Action) {
     'install-service' {
+        # Every install and update, so a newer PawnIO's library reaches OpenRGB too.
+        Copy-PawnIOLib
         # The official OpenRGB installer's service already serves the SDK port; freeRGB uses that.
         if (Get-Service -Name 'OpenRGB' -ErrorAction SilentlyContinue) { exit 0 }
         $bin = '"' + $openrgb + '"'
@@ -50,6 +64,8 @@ switch ($Action) {
         }
         # OpenRGB keeps a service's settings and logs beside its exe.
         Remove-Item (Join-Path $PSScriptRoot 'openrgb\service_config') -Recurse -Force -ErrorAction SilentlyContinue
+        # Copied, not installed, so the uninstaller does not know it.
+        Remove-Item $pawnioLib -Force -ErrorAction SilentlyContinue
     }
     'find-openrgb' {
         # Another OpenRGB installed for the whole PC: an installer entry or its service.
@@ -106,6 +122,7 @@ switch ($Action) {
         Remove-Item $file -ErrorAction SilentlyContinue
         # 3010: installed, reboot suggested. 183 (ERROR_ALREADY_EXISTS): it was already there.
         if ($p.ExitCode -notin 0, 3010, 183) { exit $p.ExitCode }
+        Copy-PawnIOLib
         # OpenRGB looks for PawnIO devices only when it starts.
         if (Get-Service -Name $service -ErrorAction SilentlyContinue) { Restart-Service -Name $service -Force }
         elseif (Get-Service -Name 'OpenRGB' -ErrorAction SilentlyContinue) { Restart-Service -Name 'OpenRGB' -Force }

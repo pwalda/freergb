@@ -36,11 +36,11 @@ OpenRGB's folder also carries these libraries, as OpenRGB ships them:
   2010, Alan Ott, Signal 11 Software, and the libusb/hidapi team. HIDAPI may be used under the
   GNU GPL v3, a BSD-style licence, or the original HIDAPI licence; it is redistributed here
   under the BSD-style licence, reproduced at the end of this file.
-- **PawnIOLib** (`PawnIOLib.dll`) and PawnIO modules (`SmbusI801.bin`, `SmbusPIIX4.bin`,
-  `SmbusIntelSkylakeIMC.bin`, `SmbusNCT6793.bin`, `LpcIO.bin`, `LedsValve.bin`), by namazso
-  (https://pawnio.eu), as OpenRGB 1.1 ships them. PawnIOLib's open-source edition is under the
-  GNU Lesser General Public License, version 2.1 (https://github.com/namazso/PawnIO); the
-  modules are under the LGPL, version 2.1 or later (https://github.com/namazso/PawnIO.Modules).
+- **PawnIO modules** (`SmbusI801.bin`, `SmbusPIIX4.bin`, `SmbusIntelSkylakeIMC.bin`,
+  `SmbusNCT6793.bin`, `LpcIO.bin`, `LedsValve.bin`), by namazso (https://pawnio.eu), as
+  OpenRGB 1.1 ships them, under the LGPL, version 2.1 or later
+  (https://github.com/namazso/PawnIO.Modules). The installer does not include PawnIOLib.dll:
+  when PawnIO is installed, it copies PawnIO's own copy into the `openrgb` folder.
 
 The PawnIO driver is not part of freeRGB: the installer offers to download it from PawnIO's
 official release.
