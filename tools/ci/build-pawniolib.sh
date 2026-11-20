@@ -11,6 +11,8 @@ set -euo pipefail
 commit=5cdf470831fdfff3f7f1d06363ca6b230f3bf35a
 version=(2 2 0)
 root=$(cd "$(dirname "$0")/../.." && pwd)
+# The tools get Windows paths: with conversion off (below), /d/a/... would read as a /d switch.
+root=$(cygpath -m "$root")
 src="$root/target/pawnio-src"
 out="$root/target/pawniolib"
 
