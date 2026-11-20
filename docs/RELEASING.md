@@ -28,8 +28,6 @@ update. Losing the key means installed apps can no longer update themselves.
 
 ## Signing
 
-Options, costs and what SignPath requires: `docs/SIGNING.md`.
-
 Windows builds ship unsigned until SignPath Foundation approves the project.
 Then set the repository variable `SIGNPATH_ENABLED=true`, the secret
 `SIGNPATH_API_TOKEN`, and the variables `SIGNPATH_ORGANIZATION_ID`,
