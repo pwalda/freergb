@@ -242,7 +242,7 @@ fn on_tray_menu(handle: &AppHandle, id: &str) {
             Ok(())
         }
         "quit" => {
-            quit(handle);
+            quit(handle, false);
             Ok(())
         }
         "about" => {
@@ -445,6 +445,8 @@ fn on_power(handle: &AppHandle, p: Power) {
 
 /// Long enough for a few frames at 30 fps, well inside the time the OS gives (about 2 s).
 const SLEEP_FLUSH: Duration = Duration::from_millis(300);
+/// Most the end of a session waits for the lights, inside the time Windows gives (5 s).
+const SESSION_END_LIMIT: Duration = Duration::from_millis(2500);
 /// How often the schedule looks at the clock.
 const SCHEDULE_TICK: Duration = Duration::from_secs(15);
 
@@ -1082,10 +1084,11 @@ fn set_desk_map(app: State<'_, App>, map: Vec<Placed>) -> Result<(), String> {
 }
 
 /// Stop an owned OpenRGB gracefully, then exit. Runs once; later exit requests pass through.
-fn quit(app: &AppHandle) {
+/// `session_end`: the PC is shutting down, restarting or signing out.
+fn quit(app: &AppHandle, session_end: bool) {
     let app = app.clone();
     tauri::async_runtime::spawn(async move {
-        if shut_down(&app).await {
+        if stop_all(&app, session_end).await {
             app.exit(0);
         }
     });
@@ -1093,6 +1096,12 @@ fn quit(app: &AppHandle) {
 
 /// Hands devices back and stops an owned OpenRGB, once; false if that is already under way.
 pub(crate) async fn shut_down(app: &AppHandle) -> bool {
+    stop_all(app, false).await
+}
+
+/// Like `shut_down`, but at the end of the session the schedule may turn the lights off and
+/// leave them off: devices handed back to their own modes would stay lit with the PC off.
+async fn stop_all(app: &AppHandle, session_end: bool) -> bool {
     let state = app.state::<App>();
     {
         let Ok(mut q) = state.quitting.lock() else {
@@ -1104,8 +1113,13 @@ pub(crate) async fn shut_down(app: &AppHandle) -> bool {
         *q = true;
     }
     let sup = state.supervisor.lock().ok().and_then(|mut g| g.take());
-    // Put devices back in their previous modes while the server is still up.
-    state.lights.shutdown().await;
+    let off = session_end && state.store().schedule().shutdown == Action::Off;
+    // While the server is still up.
+    if off {
+        state.lights.shut_off().await;
+    } else {
+        state.lights.shutdown().await;
+    }
     if let Some(s) = sup {
         s.shutdown().await;
     }
@@ -1127,19 +1141,21 @@ fn spawn_signal_handler(handle: AppHandle) {
             ) else {
                 return;
             };
-            tokio::select! {
-                _ = term.recv() => {}
-                _ = int.recv() => {}
-                _ = hup.recv() => {}
-            }
+            // Shutting down or signing out sends TERM to the session's processes.
+            let session_end = tokio::select! {
+                _ = term.recv() => true,
+                _ = int.recv() => false,
+                _ = hup.recv() => false,
+            };
+            quit(&handle, session_end);
         }
         #[cfg(not(unix))]
         {
             if tokio::signal::ctrl_c().await.is_err() {
                 return;
             }
+            quit(&handle, false);
         }
-        quit(&handle);
     });
 }
 
@@ -1287,14 +1303,23 @@ pub fn run() {
         .build(tauri::generate_context!())
         .expect("failed to build the freergb app");
 
-    app.run(|_, ev| {
-        if let RunEvent::ExitRequested { api, code, .. } = ev {
+    app.run(|handle, ev| match ev {
+        RunEvent::ExitRequested { api, code, .. } => {
             // `code` is None when the last window closed: keep running in the tray. Quitting
             // goes through `quit`, whose `app.exit(0)` carries Some.
             if code.is_none() {
                 api.prevent_exit();
             }
         }
+        // Without a quit first, this is Windows ending the session (WM_ENDSESSION): the
+        // process ends as soon as this returns, and Windows waits only a few seconds.
+        RunEvent::Exit => {
+            let handle = handle.clone();
+            tauri::async_runtime::block_on(async move {
+                let _ = tokio::time::timeout(SESSION_END_LIMIT, stop_all(&handle, true)).await;
+            });
+        }
+        _ => {}
     });
 }
 

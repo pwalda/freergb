@@ -40,7 +40,7 @@ test('days read as people say them', () => {
 test('the rail line names sleep and wake', () => {
   assert.equal(powerLine(emptySchedule()), 'Sleep: lights off · Wake: look from before')
   assert.equal(
-    powerLine({ rules: [], sleep: { kind: 'nothing' }, wake: { kind: 'profile', name: 'Calm' } }),
+    powerLine({ rules: [], sleep: { kind: 'nothing' }, wake: { kind: 'profile', name: 'Calm' }, shutdown: { kind: 'off' } }),
     'Sleep: nothing · Wake: Calm',
   )
 })

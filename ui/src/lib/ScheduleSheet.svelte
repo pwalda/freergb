@@ -34,6 +34,7 @@
   let rules = $state(byTime(start.rules).map((r) => ({ ...r, key: n++ })))
   let sleep = $state<Action>(start.sleep)
   let wake = $state<Action>(start.wake)
+  let shutdown = $state<Action>(start.shutdown)
   let busy = $state(false)
   let error = $state('')
 
@@ -64,7 +65,7 @@
     busy = true
     error = ''
     try {
-      await onsave({ rules: byTime(rules).map(({ at, days, action }) => ({ at, days, action })), sleep, wake })
+      await onsave({ rules: byTime(rules).map(({ at, days, action }) => ({ at, days, action })), sleep, wake, shutdown })
       close()
     } catch (err) {
       error = String(err)
@@ -185,6 +186,19 @@
                 {#each names(wake) as p (p)}<option value="p:{p}">{p}</option>{/each}
               </optgroup>
             {/if}
+          </select>
+          {@render chevron()}
+        </span>
+      </label>
+      <label class="row">
+        <span>
+          <span class="name">When it shuts down</span>
+          <span class="desc">Also restart and sign-out. Left on, devices use their own modes.</span>
+        </span>
+        <span class="select">
+          <select value={actionValue(shutdown)} onchange={(e) => (shutdown = actionOf((e.currentTarget as HTMLSelectElement).value))}>
+            <option value="off">Lights off</option>
+            <option value="nothing">Leave them on</option>
           </select>
           {@render chevron()}
         </span>

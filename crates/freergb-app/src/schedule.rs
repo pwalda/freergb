@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
-//! The schedule: what happens at set times of day and when the PC sleeps and wakes.
+//! The schedule: what happens at set times of day, when the PC sleeps and wakes, and when it
+//! shuts down.
 //!
 //! A rule fires at its minute on its weekdays while the app runs. Nothing is caught up: a rule
 //! whose time passed while the app was closed, the PC slept or the clock jumped does not fire
@@ -49,6 +50,10 @@ pub struct Schedule {
     pub sleep: Action,
     #[serde(default = "wake_default")]
     pub wake: Action,
+    /// Shutting down, restarting or signing out. Off, or nothing: devices go back to the
+    /// modes they had before freeRGB, as when it quits.
+    #[serde(default = "shutdown_default")]
+    pub shutdown: Action,
 }
 
 fn sleep_default() -> Action {
@@ -59,12 +64,17 @@ fn wake_default() -> Action {
     Action::Back
 }
 
+fn shutdown_default() -> Action {
+    Action::Off
+}
+
 impl Default for Schedule {
     fn default() -> Self {
         Schedule {
             rules: vec![],
             sleep: sleep_default(),
             wake: wake_default(),
+            shutdown: shutdown_default(),
         }
     }
 }
@@ -98,6 +108,9 @@ impl Schedule {
         }
         if matches!(self.wake, Action::Off) {
             return Err("Waking cannot turn the lights off".into());
+        }
+        if !matches!(self.shutdown, Action::Off | Action::Nothing) {
+            return Err("Shutting down turns the lights off or leaves them".into());
         }
         known(&self.sleep)?;
         known(&self.wake)
@@ -259,6 +272,7 @@ mod tests {
             rules: vec![rule(60, EVERY_DAY, profile("Calm"))],
             sleep: Action::Off,
             wake: profile("Calm"),
+            shutdown: Action::Nothing,
         };
         assert_eq!(ok.check(&["Calm"]), Ok(()));
         assert!(ok.check(&[]).is_err(), "profile must exist");
@@ -274,6 +288,8 @@ mod tests {
         assert!(bad(|s| s.rules[0].action = Action::Nothing));
         assert!(bad(|s| s.sleep = Action::Back));
         assert!(bad(|s| s.wake = Action::Off));
+        assert!(bad(|s| s.shutdown = Action::Back));
+        assert!(bad(|s| s.shutdown = profile("Calm")));
         assert!(bad(
             |s| s.rules = vec![rule(0, 1, Action::Off); MAX_RULES + 1]
         ));
@@ -288,6 +304,7 @@ mod tests {
             ],
             sleep: profile("A"),
             wake: profile("A"),
+            shutdown: Action::Off,
         };
         s.renamed("A", "B");
         assert_eq!(
@@ -305,8 +322,8 @@ mod tests {
             serde_json::from_str(r#"{"rules":[{"at":1380,"action":{"kind":"off"}}]}"#).unwrap();
         assert_eq!(s.rules[0].days, EVERY_DAY);
         assert_eq!(
-            (s.sleep.clone(), s.wake.clone()),
-            (Action::Off, Action::Back)
+            (s.sleep.clone(), s.wake.clone(), s.shutdown.clone()),
+            (Action::Off, Action::Back, Action::Off)
         );
         let json = serde_json::to_string(&profile("Work")).unwrap();
         assert_eq!(json, r#"{"kind":"profile","name":"Work"}"#);

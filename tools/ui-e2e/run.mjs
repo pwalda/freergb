@@ -94,7 +94,7 @@ const fakeTauri = () => {
         await new Promise((r) => setTimeout(r, 150))
         throw 'The update could not be downloaded: connection reset'
       }
-      if (cmd === 'schedule') return w.__schedule ?? { rules: [], sleep: { kind: 'off' }, wake: { kind: 'back' } }
+      if (cmd === 'schedule') return w.__schedule ?? { rules: [], sleep: { kind: 'off' }, wake: { kind: 'back' }, shutdown: { kind: 'off' } }
       if (cmd === 'set_schedule') {
         if (args.schedule.rules.some((r) => (r.days & 127) === 0)) throw 'A time needs at least one day'
         w.__schedule = args.schedule
@@ -1321,10 +1321,13 @@ if (SHOTS) {
   await sheet.getByRole('button', { name: 'Saturday' }).click()
   await sheet.getByRole('button', { name: 'Sunday' }).click()
   await sheet.getByRole('combobox', { name: 'When it wakes' }).selectOption('nothing')
+  ok((await sheet.getByRole('combobox', { name: 'When it shuts down' }).inputValue()) === 'off', 'shutting down turns the lights off by default')
+  await sheet.getByRole('combobox', { name: 'When it shuts down' }).selectOption('nothing')
+  if (SHOTS) await page.screenshot({ path: `${SHOTS}/schedule-sheet.png` })
   await sheet.getByRole('button', { name: 'Save' }).click()
   await settle()
   const saved = await page.evaluate(() => window.__schedule)
-  ok(JSON.stringify(saved) === JSON.stringify({ rules: [{ at: 450, days: 31, action: { kind: 'profile', name: 'Work' } }], sleep: { kind: 'off' }, wake: { kind: 'nothing' } }), `Save sends the schedule: ${JSON.stringify(saved)}`)
+  ok(JSON.stringify(saved) === JSON.stringify({ rules: [{ at: 450, days: 31, action: { kind: 'profile', name: 'Work' } }], sleep: { kind: 'off' }, wake: { kind: 'nothing' }, shutdown: { kind: 'nothing' } }), `Save sends the schedule: ${JSON.stringify(saved)}`)
   ok(!(await sheet.isVisible()), 'and closes')
   const text = await plate.textContent()
   ok(/07:30/.test(text) && /Work/.test(text) && /Weekdays/.test(text) && /Wake: nothing/.test(text), `the rail lists it: ${text}`)

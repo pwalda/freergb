@@ -9,7 +9,7 @@
 use freergb_effects::layout::Placed;
 use freergb_effects::react::Readings;
 use freergb_effects::spec::{Canvas, EffectKind, EffectSpec, Rgb, Scene, Targets};
-use freergb_effects::{hwmode, Engine, EngineConfig};
+use freergb_effects::{hwmode, Engine, EngineConfig, StopBehavior};
 use freergb_sdk::ids::{mode_flag, zone_type};
 use freergb_sdk::{keys_of, Client, DeviceKey, RgbBackend, Segment};
 use freergb_sources::{demand, Hub};
@@ -336,6 +336,19 @@ impl Lights {
     /// Stop the engine and let it put devices back in their previous modes. Call before the
     /// server is stopped.
     pub async fn shutdown(&self) {
+        self.stop(StopBehavior::RestoreMode).await;
+    }
+
+    /// Black out every device and stop, leaving them black: the PC is shutting down, and the
+    /// modes they had before are usually lit. Call before the server is stopped.
+    pub async fn shut_off(&self) {
+        if self.set_scenes(Self::off_scenes()).is_ok() {
+            tokio::time::sleep(OFF_FLUSH).await;
+        }
+        self.stop(StopBehavior::Leave).await;
+    }
+
+    async fn stop(&self, how: StopBehavior) {
         let engine = {
             let mut g = self.inner();
             g.client = None;
@@ -344,10 +357,13 @@ impl Lights {
             e
         };
         if let Some(e) = engine {
-            let _ = tokio::time::timeout(std::time::Duration::from_secs(4), e.stop()).await;
+            let _ = tokio::time::timeout(std::time::Duration::from_secs(4), e.stop_with(how)).await;
         }
     }
 }
+
+/// Long enough for a few frames at 30 fps to reach the devices.
+const OFF_FLUSH: std::time::Duration = std::time::Duration::from_millis(300);
 
 #[cfg(test)]
 mod tests {
@@ -773,6 +789,25 @@ mod tests {
         l.attach(Some(&connect(&server).await));
         assert!(l.paint(99, 1, 2, 3).unwrap_err().contains("no such device"));
         l.shutdown().await;
+    }
+
+    #[tokio::test]
+    async fn shut_off_leaves_every_device_black() {
+        let mut d = devices::ram_stick(0);
+        d.active_mode = 2;
+        let server = MockServer::start(vec![d]).await.unwrap();
+        let id = server.device_ids()[0];
+        let l = Lights::default();
+        l.attach(Some(&connect(&server).await));
+        l.set_scenes(vec![rainbow_all()]).unwrap();
+        settle().await;
+        l.shut_off().await;
+        assert_eq!(
+            server.device(id).unwrap().active_mode,
+            0,
+            "the earlier mode came back"
+        );
+        assert_eq!(rgb_set(&server, id), [(0, 0, 0)].into_iter().collect());
     }
 
     #[tokio::test]

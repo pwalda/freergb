@@ -1,5 +1,5 @@
 // The schedule (mirrors `schedule.rs`): times of day that turn the lights off or apply a
-// profile, and what sleep and wake do. Words for the rail and the sheet.
+// profile, and what sleep, wake and shutting down do. Words for the rail and the sheet.
 
 export type Action =
   | { kind: 'nothing' }
@@ -18,6 +18,8 @@ export interface Schedule {
   rules: Rule[]
   sleep: Action
   wake: Action
+  /** Off, or nothing: devices go back to their own modes. */
+  shutdown: Action
 }
 
 export const EVERY_DAY = 0b111_1111
@@ -28,7 +30,12 @@ export const MAX_RULES = 32
 export const DAY_NAMES = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 export const DAY_SHORT = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 
-export const emptySchedule = (): Schedule => ({ rules: [], sleep: { kind: 'off' }, wake: { kind: 'back' } })
+export const emptySchedule = (): Schedule => ({
+  rules: [],
+  sleep: { kind: 'off' },
+  wake: { kind: 'back' },
+  shutdown: { kind: 'off' },
+})
 
 /** "07:05" for 425. */
 export const clock = (at: number) =>

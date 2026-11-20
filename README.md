@@ -13,7 +13,7 @@ OpenRGB project.
 
 - One look for every device in a click, or a different look per device or per group of devices.
 - Twelve software effects with a live preview, built-in device modes per zone, and painting LEDs by hand.
-- Profiles that switch from the window or the tray, a schedule for times of day and the PC's sleep and wake, and Lights off.
+- Profiles that switch from the window or the tray, a schedule for times of day and the PC's sleep and wake, and Lights off. The lights go off when the PC shuts down.
 - Looks that follow the CPU or GPU temperature or load, what the PC plays, or the screen.
 - Lives in the tray and costs almost nothing while it sits there. Updates install from within the app.
 
@@ -65,7 +65,8 @@ everywhere; an NVIDIA card through its driver; on Linux the CPU and an AMD card 
 Windows the CPU temperature through freeRGB's sensor service and PawnIO, or LibreHardwareMonitor), what the PC plays (its level, a
 pulse on each beat, or its spectrum across the LEDs), or the screen: each LED takes the colour of
 the part of the screen where it sits on the desk map. Times of day and the PC's sleep and wake can switch
-profiles or turn the lights off. Settings > Diagnostics shows OpenRGB's log and the buses, USB and
+profiles or turn the lights off, and shutting down turns them off unless the schedule says to leave
+them on. Settings > Diagnostics shows OpenRGB's log and the buses, USB and
 HID devices and serial ports it sees.
 
 ### Building and testing
