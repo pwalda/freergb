@@ -24,8 +24,21 @@ See [docs/INSTALL.md](docs/INSTALL.md) for Windows and Linux, including device a
 ## Privacy
 
 freeRGB has no accounts, ads or telemetry. It talks to the OpenRGB server on this PC and, once
-a day, fetches the update feed from `raw.githubusercontent.com`. On Windows the installer
-downloads PawnIO from its official release only when you ask for it.
+a day, fetches the update feed from `raw.githubusercontent.com` (Settings > Check for updates
+turns that off). On Windows the installer downloads PawnIO from its official release only when
+you ask for it.
+
+## Code signing policy
+
+Windows releases are to be signed for free through SignPath.io, with a certificate by SignPath
+Foundation; until then they are unsigned. Only what this repository builds is signed:
+`freeRGB.exe`, `freergb-sensord.exe` and the installer, all built from the tagged source by
+GitHub Actions. OpenRGB and the libraries bundled with it are left as their authors ship them.
+
+- Authors, reviewers and approvers: [Paweł Walda](https://github.com/pwalda). Every change from
+  outside is reviewed before it is merged, and every release is approved by hand before it is
+  signed.
+- Privacy: see [Privacy](#privacy). freeRGB collects nothing about you or your PC.
 
 ## For developers
 

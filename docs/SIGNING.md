@@ -28,9 +28,9 @@ From [signpath.org/terms](https://signpath.org/terms):
 | "May not contain any proprietary, non open-source component" | Done: the installer leaves out OpenRGB's DirectX DLLs and `PawnIOLib.dll`. See below. |
 | Upstream open-source binaries may be bundled unsigned, and must not be signed under our subscription | OK: OpenRGB, Qt, libusb and HIDAPI stay as OpenRGB ships them. Sign only `freeRGB.exe`, `freergb-sensord.exe` and the installer. |
 | Built from the repository by an automated build | Done: `.github/workflows/release.yml`. |
-| A "Code signing policy" on the home and download pages, with "Free code signing provided by SignPath.io, certificate by SignPath Foundation", the team roles and members, and a privacy statement | To do when accepted: a README section and a line in the release notes. |
-| Privacy: say what goes over the network | freeRGB contacts only `raw.githubusercontent.com` (the daily update check) and the OpenRGB server on this PC; the installer downloads PawnIO from its official release when asked. |
-| Multi-factor authentication for every team member, on GitHub and SignPath | Check that the GitHub account has 2FA. |
+| A "Code signing policy" on the home and download pages, with "Free code signing provided by SignPath.io, certificate by SignPath Foundation", the team roles and members, and a privacy statement | Done in the README, worded as planned. When accepted: the exact credit line in the README and in the release notes. |
+| Privacy: say what goes over the network | Done: freeRGB contacts only `raw.githubusercontent.com` (the daily update check, which Settings > Check for updates turns off) and the OpenRGB server on this PC; the installer downloads PawnIO from its official release when asked. The README's Privacy section says so. |
+| Multi-factor authentication for every team member, on GitHub and SignPath | Check that the GitHub account has 2FA; turn it on for the SignPath account. |
 | Product name and version in the files' metadata | Done: Tauri for `freeRGB.exe`, a version resource for `freergb-sensord.exe`. |
 | Already released in the form to be signed | The first beta, unsigned, satisfies this. |
 
@@ -59,9 +59,12 @@ To paste into the form at [signpath.org/apply](https://signpath.org/apply):
 > **What we sign:** the Windows installer (NSIS) built by GitHub Actions from the tagged
 > source, the app executable `freeRGB.exe`, and `freergb-sensord.exe`, a small service that
 > reads the CPU temperature through the PawnIO driver. The installer also carries OpenRGB 1.1
-> and its open-source libraries unmodified and unsigned by us, with their source attached to
+> and its open-source libraries as OpenRGB ships them (without its DirectX shader compiler and
+> PawnIO's library, which are not open source), unsigned by us, with their source attached to
 > every release.
 >
 > **Maintainer:** Paweł Walda (GitHub: pwalda), author, reviewer and approver.
 >
 > **Releases:** https://github.com/pwalda/freergb/releases (first beta: v0.1.0-beta.1).
+>
+> **Code signing policy:** https://github.com/pwalda/freergb#code-signing-policy
