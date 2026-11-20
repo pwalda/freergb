@@ -34,15 +34,25 @@ pub const FPS_CHOICES: [u32; 2] = [30, 60];
 struct Settings {
     #[serde(default = "default_fps")]
     fps: u32,
+    /// The daily look for a newer freeRGB, freeRGB's only contact outside this PC.
+    #[serde(default = "yes")]
+    check_updates: bool,
 }
 
 fn default_fps() -> u32 {
     FPS_CHOICES[0]
 }
 
+fn yes() -> bool {
+    true
+}
+
 impl Default for Settings {
     fn default() -> Self {
-        Settings { fps: default_fps() }
+        Settings {
+            fps: default_fps(),
+            check_updates: true,
+        }
     }
 }
 
@@ -289,6 +299,17 @@ impl Store {
         }
         self.change(|d| {
             d.settings.fps = fps;
+            Ok(())
+        })
+    }
+
+    pub fn check_updates(&self) -> bool {
+        self.data.settings.check_updates
+    }
+
+    pub fn set_check_updates(&mut self, on: bool) -> Result<(), String> {
+        self.change(|d| {
+            d.settings.check_updates = on;
             Ok(())
         })
     }
@@ -884,6 +905,19 @@ mod tests {
         shelf.segment = Some(freergb_effects::layout::SegmentKey { zone: 0, start: 10 });
         s.set_map(vec![placed("Strip", at), shelf.clone()]).unwrap();
         assert!(s.set_map(vec![shelf.clone(), shelf]).is_err());
+    }
+
+    #[test]
+    fn update_checks_are_on_by_default_and_turning_them_off_is_kept() {
+        let dir = TempDir::new("check-updates");
+        let (mut s, _) = Store::open(dir.file());
+        assert!(s.check_updates());
+        s.set_check_updates(false).unwrap();
+        assert!(!Store::open(dir.file()).0.check_updates());
+
+        // A file from before the setting existed checks.
+        std::fs::write(dir.file(), r#"{"version":1,"settings":{"fps":60}}"#).unwrap();
+        assert!(Store::open(dir.file()).0.check_updates());
     }
 
     #[test]

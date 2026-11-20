@@ -16,6 +16,8 @@ const CHECK_EVERY: Duration = Duration::from_secs(24 * 60 * 60);
 pub struct Updates {
     pending: Mutex<Option<Update>>,
     installing: AtomicBool,
+    /// Checks turned back on: look now rather than at the next daily tick.
+    resumed: tokio::sync::Notify,
 }
 
 #[derive(Debug, Clone, Serialize, PartialEq)]
@@ -59,17 +61,29 @@ impl Progress {
     }
 }
 
-/// Checks now and then daily. Debug builds do not check: their version is not a release.
+/// Checks now and then daily, unless the user turned checks off. Debug builds do not check:
+/// their version is not a release.
 pub fn spawn(handle: AppHandle) {
     if cfg!(debug_assertions) {
         return;
     }
     tauri::async_runtime::spawn(async move {
+        let updates = handle.state::<Updates>();
         loop {
-            check(&handle).await;
-            tokio::time::sleep(CHECK_EVERY).await;
+            if crate::shell::update_checks_on(&handle) {
+                check(&handle).await;
+            }
+            tokio::select! {
+                _ = tokio::time::sleep(CHECK_EVERY) => {}
+                _ = updates.resumed.notified() => {}
+            }
         }
     });
+}
+
+/// Checks were turned on again.
+pub fn resume(handle: &AppHandle) {
+    handle.state::<Updates>().resumed.notify_one();
 }
 
 async fn check(handle: &AppHandle) {

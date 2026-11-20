@@ -74,6 +74,8 @@ const fakeTauri = () => {
       if (cmd === 'store_notice') return null
       if (cmd === 'autostart') return !!w.__autostart
       if (cmd === 'set_autostart') { w.__autostart = args.on; return args.on }
+      if (cmd === 'update_checks') return w.__checks ?? true
+      if (cmd === 'set_update_checks') { w.__checks = args.on; return args.on }
       if (cmd === 'reset_all') { sessionStorage.setItem('reset', '1'); return }
       if (cmd === 'fps') return w.__fps ?? 30
       if (cmd === 'update_status') return w.__update ?? null
@@ -930,6 +932,12 @@ await page.getByRole('button', { name: 'Settings', exact: true }).click()
 await login.waitFor()
 await settle()
 ok(await login.isChecked(), 'reopened settings read it back')
+const checks = page.getByRole('switch', { name: /Check for updates/ })
+ok(await checks.isChecked(), 'update checks are on by default')
+await checks.click()
+await settle()
+ok((await page.evaluate(() => window.__checks)) === false && !(await checks.isChecked()), 'the switch turns them off')
+if (SHOTS) await page.screenshot({ path: `${SHOTS}/settings-checks.png` })
 const rate = (n) => page.getByRole('group', { name: 'Animation smoothness' }).getByRole('button', { name: `${n} fps` })
 ok((await rate(30).getAttribute('aria-pressed')) === 'true' && (await rate(60).getAttribute('aria-pressed')) === 'false', 'effects run at 30 fps by default')
 await rate(60).click()

@@ -199,6 +199,9 @@ export const onSchedule = (f: (s: Schedule) => void) => listen<Schedule>('schedu
 
 export const autostart = () => invoke<boolean>('autostart')
 export const setAutostart = (on: boolean) => invoke<boolean>('set_autostart', { on })
+/** The daily update check, freeRGB's only contact outside this PC. */
+export const updateChecks = () => invoke<boolean>('update_checks')
+export const setUpdateChecks = (on: boolean) => invoke<boolean>('set_update_checks', { on })
 /** Forget everything freeRGB keeps (profiles, My effects, groups, map, schedule, names,
  *  settings), stop effects and starting at login. OpenRGB's own settings stay. */
 export const resetAll = () => invoke<void>('reset_all')

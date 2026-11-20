@@ -1064,6 +1064,24 @@ fn fps(app: State<'_, App>) -> u32 {
 }
 
 #[tauri::command]
+fn update_checks(app: State<'_, App>) -> bool {
+    app.store().check_updates()
+}
+
+#[tauri::command]
+fn set_update_checks(handle: AppHandle, app: State<'_, App>, on: bool) -> Result<bool, String> {
+    app.store().set_check_updates(on)?;
+    if on {
+        crate::update::resume(&handle);
+    }
+    Ok(on)
+}
+
+pub(crate) fn update_checks_on(handle: &AppHandle) -> bool {
+    handle.state::<App>().store().check_updates()
+}
+
+#[tauri::command]
 fn set_fps(app: State<'_, App>, fps: u32) -> Result<u32, String> {
     app.store().set_fps(fps)?;
     app.lights.set_fps(fps);
@@ -1209,6 +1227,8 @@ pub fn run() {
             reset_all,
             fps,
             set_fps,
+            update_checks,
+            set_update_checks,
             desk_map,
             set_desk_map,
             device_notes,

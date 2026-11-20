@@ -8,6 +8,8 @@
     resetAll,
     setAutostart,
     setFps,
+    setUpdateChecks,
+    updateChecks,
     type DeviceKey,
     type UpdateInfo,
   } from './api'
@@ -47,6 +49,8 @@
 
   /** null until the OS has answered. */
   let atLogin = $state<boolean | null>(null)
+  /** null until the backend has answered. */
+  let checking = $state<boolean | null>(null)
   /** Frames per second of software effects; null until the backend has answered. */
   let rate = $state<number | null>(null)
   let busy = $state(false)
@@ -61,7 +65,20 @@
     fps()
       .then((n) => (rate = n))
       .catch((e) => (error = String(e)))
+    updateChecks()
+      .then((on) => (checking = on))
+      .catch((e) => (error = String(e)))
   })
+  async function toggleChecks(e: Event) {
+    const want = (e.currentTarget as HTMLInputElement).checked
+    error = ''
+    try {
+      checking = await setUpdateChecks(want)
+    } catch (err) {
+      error = String(err)
+      checking = !want
+    }
+  }
   async function pickRate(n: number) {
     if (n === rate) return
     const was = rate
@@ -195,6 +212,13 @@
         {/each}
       </span>
     </div>
+    <label class="row">
+      <span>
+        <span class="name">Check for updates</span>
+        <span class="desc">Once a day, from freeRGB’s GitHub page. Off, freeRGB contacts nothing outside this PC.</span>
+      </span>
+      <input type="checkbox" role="switch" checked={checking ?? false} disabled={checking === null} onchange={toggleChecks} />
+    </label>
     {#if hidden.length > 0}
       <div class="hidden">
         <span class="name" id="hidden-label">Hidden devices</span>
