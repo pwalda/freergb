@@ -28,8 +28,5 @@ update. Losing the key means installed apps can no longer update themselves.
 
 ## Signing
 
-Windows builds ship unsigned until SignPath Foundation approves the project.
-Then set the repository variable `SIGNPATH_ENABLED=true`, the secret
-`SIGNPATH_API_TOKEN`, and the variables `SIGNPATH_ORGANIZATION_ID`,
-`SIGNPATH_PROJECT_SLUG`, `SIGNPATH_POLICY_SLUG`. The workflow then signs the
-installer before it is released.
+Windows builds ship unsigned. The workflow still has a SignPath step, off unless the
+repository variable `SIGNPATH_ENABLED` is `true`.
