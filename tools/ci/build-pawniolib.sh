@@ -41,7 +41,7 @@ cl /nologo /std:c++20 /O2 /MT /GR- /W4 /WX /utf-8 /Brepro \
     /DPawnIOLib_EXPORTS "${defs[@]}" \
     /I "$src/PawnIOLib/include" /I "$src/PawnIO/include" \
     /LD "$src/PawnIOLib/PawnIOLib.cpp" PawnIOLib.res \
-    /link /DLL /ENTRY:DllEntry /OUT:PawnIOLib.dll /BREPRO /OPT:REF /CETCOMPAT ntdll.lib
+    /link /DLL /ENTRY:DllEntry /OUT:PawnIOLib.dll /BREPRO /OPT:REF /CETCOMPAT ntdll.lib kernel32.lib
 
 # What OpenRGB and the sensor service call.
 exports=$(dumpbin /nologo /exports PawnIOLib.dll)
