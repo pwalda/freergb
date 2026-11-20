@@ -578,6 +578,18 @@ async fn stop_restores_and_leave_does_not() {
 }
 
 #[tokio::test(start_paused = true)]
+async fn stop_with_leave_keeps_the_last_frame_on_a_restoring_engine() {
+    let f = Fake::with(vec![(1, dev(0))]);
+    let e = Engine::start(f.clone(), cfg(30));
+    e.set_scenes(vec![rainbow(Targets::All)]).unwrap();
+    run_for(0.5).await;
+    let frames = f.frames(1).len();
+    e.stop_with(StopBehavior::Leave).await;
+    assert!(f.mode_calls().is_empty(), "a mode was restored");
+    assert_eq!(f.frames(1).len(), frames, "a frame was sent after stopping");
+}
+
+#[tokio::test(start_paused = true)]
 async fn narrowing_the_targets_releases_only_the_dropped_devices() {
     let f = Fake::with(vec![(1, dev(0)), (2, dev(1))]);
     let e = Engine::start(f.clone(), cfg(30));

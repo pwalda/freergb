@@ -110,7 +110,9 @@ pub struct Engine {
     fps: watch::Sender<u32>,
     devices_dirty: Arc<AtomicBool>,
     counters: Arc<Counters>,
-    stop: watch::Sender<bool>,
+    /// How the loop ends, once asked to.
+    stop: watch::Sender<Option<StopBehavior>>,
+    on_stop: StopBehavior,
     task: Option<JoinHandle<()>>,
 }
 
@@ -121,7 +123,8 @@ impl Engine {
             scenes: vec![],
             started: vec![],
         }));
-        let (stop, stop_rx) = watch::channel(false);
+        let (stop, stop_rx) = watch::channel(None);
+        let on_stop = cfg.on_stop;
         let (fps, fps_rx) = watch::channel(cfg.fps);
         let (map, map_rx) = watch::channel(Arc::new(vec![]));
         let (hidden, hidden_rx) = watch::channel(Arc::new(vec![]));
@@ -151,6 +154,7 @@ impl Engine {
             devices_dirty,
             counters,
             stop,
+            on_stop,
             task: Some(task),
         }
     }
@@ -229,8 +233,14 @@ impl Engine {
     }
 
     /// Stop the loop and restore device modes if configured.
-    pub async fn stop(mut self) {
-        let _ = self.stop.send(true);
+    pub async fn stop(self) {
+        let how = self.on_stop;
+        self.stop_with(how).await;
+    }
+
+    /// Stop the loop, ending as `how` says rather than as configured.
+    pub async fn stop_with(mut self, how: StopBehavior) {
+        let _ = self.stop.send(Some(how));
         if let Some(t) = self.task.take() {
             let _ = t.await;
         }
@@ -390,7 +400,7 @@ struct Inputs {
     map_rx: watch::Receiver<Arc<Vec<Placed>>>,
     hidden_rx: watch::Receiver<Arc<Vec<DeviceKey>>>,
     readings_rx: watch::Receiver<Arc<Readings>>,
-    stop_rx: watch::Receiver<bool>,
+    stop_rx: watch::Receiver<Option<StopBehavior>>,
 }
 
 async fn run<B: RgbBackend + 'static>(
@@ -444,7 +454,7 @@ async fn run<B: RgbBackend + 'static>(
             _ = tick.tick() => {}
             _ = stop_rx.changed() => break,
         }
-        if *stop_rx.borrow() {
+        if stop_rx.borrow().is_some() {
             break;
         }
         if fps_rx.has_changed().unwrap_or(false) {
@@ -616,8 +626,9 @@ async fn run<B: RgbBackend + 'static>(
         sends.abort_all();
     }
 
+    let how = stop_rx.borrow().unwrap_or(cfg.on_stop);
     for (id, st) in states.drain() {
-        restore(&*backend, cfg.on_stop, id, st).await;
+        restore(&*backend, how, id, st).await;
     }
 }
 
