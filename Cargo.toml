@@ -3,7 +3,7 @@ resolver = "2"
 members = ["crates/freergb-protocol", "crates/freergb-mock", "crates/freergb-sdk", "crates/freergb-supervisor", "crates/freergb-app", "crates/freergb-effects", "crates/freergb-sources", "crates/freergb-power", "crates/freergb-sensord"]
 
 [workspace.package]
-version = "0.1.0-beta.2"
+version = "0.1.0-beta.3"
 edition = "2021"
 license = "GPL-2.0-or-later"
 repository = ""
