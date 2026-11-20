@@ -1,0 +1,31 @@
+{
+  "version": "0.1.0-beta.3",
+  "notes": "- The lights go off when the PC shuts down, restarts or signs out, so they don't stay lit with the PC off. Schedule > When it shuts down can leave them on instead.",
+  "pub_date": "2026-11-20T20:38:59Z",
+  "platforms": {
+    "windows-x86_64-nsis": {
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSRU1QS2xtSW9CY0tacXlWbE5tVzlFU2l6M2hqZ1B0RjExZ3hnMU5mU1NHaTAzUWFOSjY3bmJGMWtTOE00bk1mS05idzFpcit5RTdtMGVZTDAyam5tTW9tOXRjc3RqdXdRPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzk1MjA3MDE1CWZpbGU6ZnJlZVJHQl8wLjEuMC1iZXRhLjNfeDY0LXNldHVwLmV4ZQpnRnUrMDVicDF5TG9RUzVuWm5SYWdYSU1iNHVEL1hMb3NDL0ZRVjFWL1EzQ1RPT3hkQ3ZWeUhBR1hMUUQvOE5RRjN3OEgrTUd5T2dlRjVXQmoraUJDZz09Cg==",
+      "url": "https://github.com/pwalda/freergb/releases/download/v0.1.0-beta.3/freeRGB_0.1.0-beta.3_x64-setup.exe"
+    },
+    "windows-x86_64": {
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSRU1QS2xtSW9CY0tacXlWbE5tVzlFU2l6M2hqZ1B0RjExZ3hnMU5mU1NHaTAzUWFOSjY3bmJGMWtTOE00bk1mS05idzFpcit5RTdtMGVZTDAyam5tTW9tOXRjc3RqdXdRPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzk1MjA3MDE1CWZpbGU6ZnJlZVJHQl8wLjEuMC1iZXRhLjNfeDY0LXNldHVwLmV4ZQpnRnUrMDVicDF5TG9RUzVuWm5SYWdYSU1iNHVEL1hMb3NDL0ZRVjFWL1EzQ1RPT3hkQ3ZWeUhBR1hMUUQvOE5RRjN3OEgrTUd5T2dlRjVXQmoraUJDZz09Cg==",
+      "url": "https://github.com/pwalda/freergb/releases/download/v0.1.0-beta.3/freeRGB_0.1.0-beta.3_x64-setup.exe"
+    },
+    "linux-x86_64-rpm": {
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSRU1QS2xtSW9CY0grcldEV0J4RnlRbHAvVld1dlhIMWhoVk1TeE9rZ3VMT2FrOWFoSVZKV3hXUWRHUmxhMy9lNlcvWGs1RXMzclZUVzBmUzZLZUJyV1VvaThqN0FjZmdjPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzk1MjA2NzYxCWZpbGU6ZnJlZXJnYi0wLjEuMC1iZXRhLjMtMS54ODZfNjQucnBtCkQ4ZTF5L1hBZkpoZFdEaW8zdSttU3N5WWVKZFQybkRrTk1aZjU0Wmh4bDgvSld4S1RzV21qditmMHpSdjhxRmMvaXhRcnB4QjUrOUQwYjIxQWVUbUFnPT0K",
+      "url": "https://github.com/pwalda/freergb/releases/download/v0.1.0-beta.3/freergb-0.1.0-beta.3-1.x86_64.rpm"
+    },
+    "linux-x86_64-appimage": {
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSRU1QS2xtSW9CY0FYMWhPRmpLQkZwdkdYVCtqQW5IMEZKWlhLTmtjdm9ZUDZhZDFubzJURzJjMEpTVC9xdjlsRDBZMU56cmJCSmlCVkJRc3NJams5VlFXL0lXaEI3QXdjPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzk1MjA2NzYyCWZpbGU6ZnJlZXJnYl8wLjEuMC1iZXRhLjNfYW1kNjQuQXBwSW1hZ2UKU2dUbTFqSGJGZjQxODQrT2c3NWR5WmpvT1RTOGNqWG1mTEtYVVJNd2FhMnFBemk5MFVXRGs5RC9PbXRHNDhsUHpVRDBXVHZMOWQyTEd3OHNJMnhRQ1E9PQo=",
+      "url": "https://github.com/pwalda/freergb/releases/download/v0.1.0-beta.3/freergb_0.1.0-beta.3_amd64.AppImage"
+    },
+    "linux-x86_64": {
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSRU1QS2xtSW9CY0FYMWhPRmpLQkZwdkdYVCtqQW5IMEZKWlhLTmtjdm9ZUDZhZDFubzJURzJjMEpTVC9xdjlsRDBZMU56cmJCSmlCVkJRc3NJams5VlFXL0lXaEI3QXdjPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzk1MjA2NzYyCWZpbGU6ZnJlZXJnYl8wLjEuMC1iZXRhLjNfYW1kNjQuQXBwSW1hZ2UKU2dUbTFqSGJGZjQxODQrT2c3NWR5WmpvT1RTOGNqWG1mTEtYVVJNd2FhMnFBemk5MFVXRGs5RC9PbXRHNDhsUHpVRDBXVHZMOWQyTEd3OHNJMnhRQ1E9PQo=",
+      "url": "https://github.com/pwalda/freergb/releases/download/v0.1.0-beta.3/freergb_0.1.0-beta.3_amd64.AppImage"
+    },
+    "linux-x86_64-deb": {
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSRU1QS2xtSW9CY05oQXpPRnRacjRoUmZaMHNEWDhVYmdVTXNNaUFoOGNMbmZhVEhHaWdLWUF1V3h6SEZvQWVwTCtFejgrSm9jQTNSMVJpWTN2OGI5ZklQQzA5Rzk0cUFrPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzk1MjA2NzYyCWZpbGU6ZnJlZXJnYl8wLjEuMC1iZXRhLjNfYW1kNjQuZGViCm43SjRyaTM3RVh3ODhzTzRLakZRK0VkSW4yTlp3WG5VK0FSNDhzNzdzUGQ0S2ZEaVBVYnhtWFN1MUpGeUhJWTlOdi9uK2VjbkxxbEx3NEE0OGNsYkJ3PT0K",
+      "url": "https://github.com/pwalda/freergb/releases/download/v0.1.0-beta.3/freergb_0.1.0-beta.3_amd64.deb"
+    }
+  }
+}
