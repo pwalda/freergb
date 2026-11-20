@@ -1014,20 +1014,35 @@ fn show_main(app: &AppHandle) {
     }
 }
 
-/// Whether the app starts when the user logs in.
+/// Whether the app starts when the user logs in. Async: the Store build asks Windows for its
+/// startup task, which waits on Windows' answer.
 #[tauri::command]
-fn autostart(handle: AppHandle) -> Result<bool, String> {
+async fn autostart(handle: AppHandle) -> Result<bool, String> {
     use tauri_plugin_autostart::ManagerExt;
+    if crate::package::packaged() {
+        return blocking(crate::package::startup).await;
+    }
     handle.autolaunch().is_enabled().map_err(|e| e.to_string())
 }
 
 #[tauri::command]
-fn set_autostart(handle: AppHandle, on: bool) -> Result<bool, String> {
+async fn set_autostart(handle: AppHandle, on: bool) -> Result<bool, String> {
     use tauri_plugin_autostart::ManagerExt;
+    if crate::package::packaged() {
+        return blocking(move || crate::package::set_startup(on)).await;
+    }
     let l = handle.autolaunch();
     if on { l.enable() } else { l.disable() }
         .map_err(|e| format!("Could not change starting at login: {e}"))?;
     l.is_enabled().map_err(|e| e.to_string())
+}
+
+async fn blocking<T: Send + 'static>(
+    f: impl FnOnce() -> Result<T, String> + Send + 'static,
+) -> Result<T, String> {
+    tauri::async_runtime::spawn_blocking(f)
+        .await
+        .map_err(|e| e.to_string())?
 }
 
 /// Start over: everything freeRGB keeps goes, effects stop (devices go back to their own
@@ -1044,10 +1059,19 @@ fn reset_all(handle: AppHandle, app: State<'_, App>) -> Result<(), String> {
     if let Ok(dir) = handle.path().app_config_dir() {
         let _ = std::fs::remove_file(dir.join("screen-token"));
     }
-    let l = handle.autolaunch();
-    if l.is_enabled().unwrap_or(false) {
-        l.disable()
-            .map_err(|e| format!("Could not stop starting at login: {e}"))?;
+    if crate::package::packaged() {
+        // Off the main thread: Windows answers asynchronously.
+        tauri::async_runtime::spawn_blocking(|| {
+            if let Err(e) = crate::package::set_startup(false) {
+                eprintln!("freergb: {e}");
+            }
+        });
+    } else {
+        let l = handle.autolaunch();
+        if l.is_enabled().unwrap_or(false) {
+            l.disable()
+                .map_err(|e| format!("Could not stop starting at login: {e}"))?;
+        }
     }
     scenes_changed(&handle, &app);
     groups_changed(&handle, &app);
@@ -1075,6 +1099,12 @@ fn set_update_checks(handle: AppHandle, app: State<'_, App>, on: bool) -> Result
         crate::update::resume(&handle);
     }
     Ok(on)
+}
+
+/// The Store build: the Store updates it, so there is no update check to switch.
+#[tauri::command]
+fn packaged() -> bool {
+    crate::package::packaged()
 }
 
 pub(crate) fn update_checks_on(handle: &AppHandle) -> bool {
@@ -1229,6 +1259,7 @@ pub fn run() {
             set_fps,
             update_checks,
             set_update_checks,
+            packaged,
             desk_map,
             set_desk_map,
             device_notes,
@@ -1315,7 +1346,10 @@ pub fn run() {
                 tray = tray.icon(icon.clone());
             }
             tray.build(app)?;
-            if !std::env::args().any(|a| a == TRAY_ARG) {
+            // The Store build's startup task cannot pass arguments; it says how it started.
+            let at_login =
+                std::env::args().any(|a| a == TRAY_ARG) || crate::package::started_at_login();
+            if !at_login {
                 show_main(app.handle());
             }
             Ok(())

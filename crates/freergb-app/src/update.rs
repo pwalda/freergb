@@ -62,9 +62,9 @@ impl Progress {
 }
 
 /// Checks now and then daily, unless the user turned checks off. Debug builds do not check:
-/// their version is not a release.
+/// their version is not a release; nor does the Store build, which the Store updates.
 pub fn spawn(handle: AppHandle) {
-    if cfg!(debug_assertions) {
+    if cfg!(debug_assertions) || crate::package::packaged() {
         return;
     }
     tauri::async_runtime::spawn(async move {

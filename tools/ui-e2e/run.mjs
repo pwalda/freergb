@@ -75,6 +75,7 @@ const fakeTauri = () => {
       if (cmd === 'autostart') return !!w.__autostart
       if (cmd === 'set_autostart') { w.__autostart = args.on; return args.on }
       if (cmd === 'update_checks') return w.__checks ?? true
+      if (cmd === 'packaged') return !!w.__packaged
       if (cmd === 'set_update_checks') { w.__checks = args.on; return args.on }
       if (cmd === 'reset_all') { sessionStorage.setItem('reset', '1'); return }
       if (cmd === 'fps') return w.__fps ?? 30
@@ -938,6 +939,13 @@ await checks.click()
 await settle()
 ok((await page.evaluate(() => window.__checks)) === false && !(await checks.isChecked()), 'the switch turns them off')
 if (SHOTS) await page.screenshot({ path: `${SHOTS}/settings-checks.png` })
+await page.keyboard.press('Escape')
+await page.evaluate(() => (window.__packaged = true))
+await page.getByRole('button', { name: 'Settings', exact: true }).click()
+await login.waitFor()
+await settle()
+ok((await checks.count()) === 0, 'the Store build has no update switch: the Store updates it')
+await page.evaluate(() => (window.__packaged = false))
 const rate = (n) => page.getByRole('group', { name: 'Animation smoothness' }).getByRole('button', { name: `${n} fps` })
 ok((await rate(30).getAttribute('aria-pressed')) === 'true' && (await rate(60).getAttribute('aria-pressed')) === 'false', 'effects run at 30 fps by default')
 await rate(60).click()

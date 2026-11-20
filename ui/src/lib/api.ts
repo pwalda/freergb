@@ -202,6 +202,8 @@ export const setAutostart = (on: boolean) => invoke<boolean>('set_autostart', { 
 /** The daily update check, freeRGB's only contact outside this PC. */
 export const updateChecks = () => invoke<boolean>('update_checks')
 export const setUpdateChecks = (on: boolean) => invoke<boolean>('set_update_checks', { on })
+/** The Microsoft Store build, which the Store updates. */
+export const packaged = () => invoke<boolean>('packaged')
 /** Forget everything freeRGB keeps (profiles, My effects, groups, map, schedule, names,
  *  settings), stop effects and starting at login. OpenRGB's own settings stay. */
 export const resetAll = () => invoke<void>('reset_all')

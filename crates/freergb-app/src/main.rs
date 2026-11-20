@@ -5,6 +5,7 @@ mod about;
 mod diag;
 mod dto;
 mod lights;
+mod package;
 mod schedule;
 mod shell;
 mod store;

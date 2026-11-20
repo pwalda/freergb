@@ -7,6 +7,7 @@
     onUpdateProgress,
     resetAll,
     setAutostart,
+    packaged,
     setFps,
     setUpdateChecks,
     updateChecks,
@@ -51,6 +52,8 @@
   let atLogin = $state<boolean | null>(null)
   /** null until the backend has answered. */
   let checking = $state<boolean | null>(null)
+  /** The Store build updates through the Store: no check to switch. */
+  let fromStore = $state(false)
   /** Frames per second of software effects; null until the backend has answered. */
   let rate = $state<number | null>(null)
   let busy = $state(false)
@@ -68,6 +71,9 @@
     updateChecks()
       .then((on) => (checking = on))
       .catch((e) => (error = String(e)))
+    packaged()
+      .then((p) => (fromStore = p))
+      .catch(() => {})
   })
   async function toggleChecks(e: Event) {
     const want = (e.currentTarget as HTMLInputElement).checked
@@ -212,13 +218,15 @@
         {/each}
       </span>
     </div>
-    <label class="row">
-      <span>
-        <span class="name">Check for updates</span>
-        <span class="desc">Once a day, from freeRGB’s GitHub page. Off, freeRGB contacts nothing outside this PC.</span>
-      </span>
-      <input type="checkbox" role="switch" checked={checking ?? false} disabled={checking === null} onchange={toggleChecks} />
-    </label>
+    {#if !fromStore}
+      <label class="row">
+        <span>
+          <span class="name">Check for updates</span>
+          <span class="desc">Once a day, from freeRGB’s GitHub page. Off, freeRGB contacts nothing outside this PC.</span>
+        </span>
+        <input type="checkbox" role="switch" checked={checking ?? false} disabled={checking === null} onchange={toggleChecks} />
+      </label>
+    {/if}
     {#if hidden.length > 0}
       <div class="hidden">
         <span class="name" id="hidden-label">Hidden devices</span>

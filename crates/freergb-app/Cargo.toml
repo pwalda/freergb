@@ -32,6 +32,10 @@ tauri-plugin-updater = "2"
 tauri-plugin-opener = "2"
 tauri-plugin-snap-layout = "1"
 
+[target.'cfg(windows)'.dependencies]
+# The Store package: its identity and startup task. Already in the tree through Tauri.
+windows = { version = "=0.62.2", features = ["ApplicationModel_Activation"] }
+
 [features]
 # Set by `tauri build`; serves the embedded frontend instead of devUrl.
 custom-protocol = ["tauri/custom-protocol"]

@@ -1315,6 +1315,7 @@ dependencies = [
  "tauri-plugin-snap-layout",
  "tauri-plugin-updater",
  "tokio",
+ "windows",
 ]
 
 [[package]]
